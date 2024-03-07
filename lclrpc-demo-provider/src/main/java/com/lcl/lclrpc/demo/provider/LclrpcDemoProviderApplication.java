@@ -14,27 +14,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author conglongli
+ * @date 2024/03/07
+ * @doc
+ */
 @SpringBootApplication
 @RestController
 @Import({ProviderConfig.class})
 public class LclrpcDemoProviderApplication {
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(LclrpcDemoProviderApplication.class, args);
 	}
 
+	/**
+	 *
+	 */
 	@Autowired
 	private ProviderBootstrap providerBootstrap;
 
-	// 使用HTTP + JSON 作为序列化和通信协议
+	/**
+	 * 使用HTTP + JSON 作为序列化和通信协议
+	 * @param request
+	 * @return {@link RpcResponse}
+	 */
 	@RequestMapping("/")
 	public RpcResponse invoke(@RequestBody RpcRequest request) {
 		return providerBootstrap.invokeRequest(request);
 	}
 
 
-
-
+	/**
+	 * @return {@link ApplicationRunner}
+	 */
 	@Bean
 	ApplicationRunner providerRun(){
 		return args -> {

@@ -4,10 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author conglongli
+ * @date 2024/03/07
+ * @doc
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RpcResponse<T> {
-    private boolean status; // 是否成功
-    private T data; // 返回数据
+    /**
+     * 是否成功
+     */
+    private boolean status;
+    /**
+     * 返回数据
+     */
+    private T data;
 }

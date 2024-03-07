@@ -4,7 +4,9 @@ import java.lang.annotation.*;
 
 
 /**
- * 服务提供者注解
+ * @author conglongli
+ * @date 2024/03/07
+ * @doc 服务提供者注解
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

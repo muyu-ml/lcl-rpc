@@ -7,3 +7,13 @@ Content-Type: application/json
   "methodName": "getUserById",
   "parameters": [100]
 }
+
+### mock
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "service": "com.lcl.lclrpc.demo.api.UserService",
+  "methodName": "toString",
+  "parameters": []
+}

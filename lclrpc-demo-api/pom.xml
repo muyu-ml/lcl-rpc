@@ -7,7 +7,6 @@
         <artifactId>lclrpc</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.lcl</groupId>
     <artifactId>lclrpc-demo-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>lclrpc-demo-api</name>
