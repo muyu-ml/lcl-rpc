@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "service": "com.lcl.lclrpc.demo.api.UserService",
-  "methodName": "getUserById",
+  "methodSign": "getUserById@1_java.lang.Integer",
   "parameters": [100]
 }
 

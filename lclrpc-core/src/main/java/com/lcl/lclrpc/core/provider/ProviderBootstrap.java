@@ -3,16 +3,22 @@ package com.lcl.lclrpc.core.provider;
 import com.lcl.lclrpc.core.annotation.LclProvider;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
+import com.lcl.lclrpc.core.meta.ProviderMeta;
+import com.lcl.lclrpc.core.util.MethodUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author conglongli
@@ -31,23 +37,53 @@ public class ProviderBootstrap implements ApplicationContextAware {
     /**
      *
      */
-    private Map<String, Object> skeleton = new HashMap<>();
+    private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
+
+    /**
+     *
+     */
+    @PostConstruct
+    public void start() {
+        Map<String, Object> providers = applicationContext.getBeansWithAnnotation(LclProvider.class);
+        providers.forEach((k, v) -> System.out.println("provider: " + k + " -> " + v));
+        providers.values().forEach(this::genIntrface);
+        // 启动Netty服务
+    }
+
+    /**
+     * @param obj
+     */
+    private void genIntrface(Object obj) {
+        Class<?> itfer = obj.getClass().getInterfaces()[0];
+        Method[] methods = itfer.getMethods();
+        for (Method method : methods) {
+            if(MethodUtils.isObjectMethod(method)){
+                continue;
+            }
+            createProviderMeta(itfer, obj, method);
+        }
+    }
+
+    private void createProviderMeta(Class<?> itfer, Object obj, Method method) {
+        ProviderMeta providerMeta = new ProviderMeta();
+        providerMeta.setMethod(method);
+        providerMeta.setMethodSign(MethodUtils.buildMethodSign(method));
+        providerMeta.setServiceImpl(obj);
+        log.info("create a providerMeta: " + providerMeta);
+        skeleton.add(itfer.getCanonicalName(), providerMeta);
+    }
 
     /**
      * @param request
      * @return {@link RpcResponse}
      */
-    public RpcResponse invokeRequest(RpcRequest request) {
+    public RpcResponse invoke(RpcRequest request) {
         RpcResponse rpcResponse = new RpcResponse();
-        Object bean = skeleton.get(request.getService());
+        List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
-            Method method = findMethod(bean.getClass(), request.getMethodName());
-            // 不允许调用 Object 的方法
-            if(Object.class.equals(method.getDeclaringClass())) {
-                log.warn(method + "方式为Object自带方法，不允许调用");
-                return null;
-            }
-            Object result = method.invoke(bean, request.getParameters());
+            ProviderMeta providerMeta = findProviderMeta(providerMetas, request.getMethodSign());
+            Method method = providerMeta.getMethod();
+            Object result = method.invoke(providerMeta.getServiceImpl(), request.getParameters());
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
@@ -60,39 +96,13 @@ public class ProviderBootstrap implements ApplicationContextAware {
         return rpcResponse;
     }
 
-
     /**
-     * @param aClass
-     * @param methodName
-     * @return {@link Method}
+     * 获取方法签名相同的 ProviderMeta
+     * @param providerMetas
+     * @param methodSign
+     * @return
      */
-    private Method findMethod(Class<?> aClass, String methodName) {
-        Method[] methods = aClass.getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals(methodName)) {
-                return method;
-            }
-        }
-        throw new RuntimeException("no such method: " + methodName);
+    private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
+        return providerMetas.stream().filter(x -> x.getMethodSign().equals(methodSign)).findFirst().orElse(null);
     }
-
-    /**
-     *
-     */
-    @PostConstruct
-    public void buildProviders() {
-        Map<String, Object> providers = applicationContext.getBeansWithAnnotation(LclProvider.class);
-        providers.forEach((k, v) -> System.out.println("provider: " + k + " -> " + v));
-        providers.values().forEach(this::genIntrface);
-        // 启动Netty服务
-    }
-
-    /**
-     * @param obj
-     */
-    private void genIntrface(Object obj) {
-        Class<?> anInterface = obj.getClass().getInterfaces()[0];
-        skeleton.put(anInterface.getName(), obj);
-    }
-
 }

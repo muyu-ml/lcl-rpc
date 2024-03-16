@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
+import com.lcl.lclrpc.core.util.MethodUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -27,14 +28,13 @@ public class LclInvoketionHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // 不允许调用 Object 的方法
-        if(Object.class.equals(method.getDeclaringClass())) {
-            log.warn(method + "方法为Object自带方法，不允许调用");
+        if(MethodUtils.isObjectMethod(method)) {
             return null;
         }
 
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setService(service.getCanonicalName());
-        rpcRequest.setMethodName(method.getName());
+        rpcRequest.setMethodSign(MethodUtils.buildMethodSign(method));
         rpcRequest.setParameters(args);
 
         RpcResponse rpcResponse = post(rpcRequest);

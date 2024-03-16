@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,23 +43,23 @@ public class LclrpcDemoProviderApplication {
 	 */
 	@RequestMapping("/")
 	public RpcResponse invoke(@RequestBody RpcRequest request) {
-		return providerBootstrap.invokeRequest(request);
+		return providerBootstrap.invoke(request);
 	}
 
 
 	/**
 	 * @return {@link ApplicationRunner}
 	 */
-	@Bean
-	ApplicationRunner providerRun(){
-		return args -> {
-			RpcRequest request = new RpcRequest();
-			request.setService("com.lcl.lclrpc.demo.api.UserService");
-			request.setMethodName("getUserById");
-			request.setParameters(new Object[]{100});
-			RpcResponse rpcResponse = providerBootstrap.invokeRequest(request);
-			System.out.println("return : " + rpcResponse);
-		};
-	}
+//	@Bean
+//	ApplicationRunner providerRun(){
+//		return args -> {
+//			RpcRequest request = new RpcRequest();
+//			request.setService("com.lcl.lclrpc.demo.api.UserService");
+//			request.setMethodName("getUserById");
+//			request.setParameters(new Object[]{100});
+//			RpcResponse rpcResponse = providerBootstrap.invokeRequest(request);
+//			System.out.println("return : " + rpcResponse);
+//		};
+//	}
 }
 

@@ -16,7 +16,7 @@ public class RpcRequest {
     /**
      * 方法名
      */
-    private String methodName;
+    private String methodSign;
     /**
      * 参数
      */

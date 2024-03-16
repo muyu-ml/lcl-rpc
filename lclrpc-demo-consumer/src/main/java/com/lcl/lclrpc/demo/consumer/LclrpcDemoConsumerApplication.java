@@ -42,6 +42,9 @@ public class LclrpcDemoConsumerApplication {
 			User user = userService.getUserById(100);
 			System.out.println(user);
 
+			User user1 = userService.getUserById(100, "tom");
+			System.out.println(user1);
+
 			int id = userService.getId(100);
 			System.out.println("========" + id);
 
