@@ -16,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,14 +56,18 @@ public class ProviderBootstrap implements ApplicationContextAware {
      * @param obj
      */
     private void genIntrface(Object obj) {
-        Class<?> itfer = obj.getClass().getInterfaces()[0];
-        Method[] methods = itfer.getMethods();
-        for (Method method : methods) {
-            if(MethodUtils.isObjectMethod(method)){
-                continue;
-            }
-            createProviderMeta(itfer, obj, method);
-        }
+        // 兼容多接口
+        Arrays.stream(obj.getClass().getInterfaces()).forEach(
+                itfer -> {
+                    Method[] methods = itfer.getMethods();
+                    for (Method method : methods) {
+                        if (MethodUtils.isObjectMethod(method)) {
+                            continue;
+                        }
+                        createProviderMeta(itfer, obj, method);
+                    }
+                }
+        );
     }
 
     private void createProviderMeta(Class<?> itfer, Object obj, Method method) {
@@ -100,7 +105,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private Object[] processParams(Object[] args, Class<?>[] parameterTypes) {
-        if(args == null || args.length == 0){
+        if (args == null || args.length == 0) {
             return args;
         }
         Object[] actuals = new Object[args.length];
@@ -112,6 +117,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     /**
      * 获取方法签名相同的 ProviderMeta
+     *
      * @param providerMetas
      * @param methodSign
      * @return
