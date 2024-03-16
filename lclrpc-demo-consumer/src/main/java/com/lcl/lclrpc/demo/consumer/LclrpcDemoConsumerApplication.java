@@ -54,8 +54,29 @@ public class LclrpcDemoConsumerApplication {
 			String name = userService.getName();
 			System.out.println("========" + name);
 
-			int height = userService.getHeight();
+			long height = userService.getHeight();
 			System.out.println("========" + height);
+
+			long height1 = userService.getHeight(new User(100, "lcl"));
+			System.out.println("========" + height1);
+
+			int[] ids = userService.getIds();
+			for(int i : ids) {
+				System.out.println("========" + i);
+			}
+
+			long[] longids = userService.getLongIds();
+			for(long i : longids) {
+				System.out.println("========" + i);
+			}
+
+			int[] ids2 = userService.getIds(new int[] {2,4,6});
+			for(int i : ids2) {
+				System.out.println("========" + i);
+			}
+
+
+
 
 //			Order order = orderService.getOrderById(404);
 //			System.out.println(order);

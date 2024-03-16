@@ -5,6 +5,7 @@ import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
+import com.lcl.lclrpc.core.util.TypeUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +84,9 @@ public class ProviderBootstrap implements ApplicationContextAware {
         try {
             ProviderMeta providerMeta = findProviderMeta(providerMetas, request.getMethodSign());
             Method method = providerMeta.getMethod();
-            Object result = method.invoke(providerMeta.getServiceImpl(), request.getParameters());
+            // 类型转换，防止对象被序列化后丢失类型信息
+            Object[] parameters = processParams(request.getParameters(), method.getParameterTypes());
+            Object result = method.invoke(providerMeta.getServiceImpl(), parameters);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
@@ -94,6 +97,17 @@ public class ProviderBootstrap implements ApplicationContextAware {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
+    }
+
+    private Object[] processParams(Object[] args, Class<?>[] parameterTypes) {
+        if(args == null || args.length == 0){
+            return args;
+        }
+        Object[] actuals = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            actuals[i] = TypeUtils.cast(args[i], parameterTypes[i]);
+        }
+        return actuals;
     }
 
     /**

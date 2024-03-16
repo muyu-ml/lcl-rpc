@@ -38,7 +38,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getHeight() {
-        return 175;
+    public long getHeight() {
+        return 175L;
+    }
+
+    @Override
+    public long getHeight(User user) {
+        return user.getId().longValue();
+    }
+
+    @Override
+    public int[] getIds() {
+        return new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    }
+
+    @Override
+    public long[] getLongIds() {
+        return new long[] {1L, 2L, 3L};
+    }
+
+    @Override
+    public int[] getIds(int[] ids) {
+        return ids;
     }
 }

@@ -20,5 +20,13 @@ public interface UserService {
 
     String getName();
 
-    int getHeight();
+    long getHeight();
+
+    long getHeight(User user);
+
+    int[] getIds();
+
+    long[] getLongIds();
+
+    int[] getIds(int[] ids);
 }
