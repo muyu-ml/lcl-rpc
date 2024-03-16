@@ -21,4 +21,9 @@ public class RpcResponse<T> {
      * 返回数据
      */
     private T data;
+
+    /**
+     * 异常信息
+     */
+    Exception ex;
 }

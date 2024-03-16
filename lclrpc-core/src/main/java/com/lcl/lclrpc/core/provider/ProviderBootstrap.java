@@ -5,6 +5,7 @@ import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -19,6 +20,7 @@ import java.util.Map;
  * @doc
  */
 @Data
+@Slf4j
 public class ProviderBootstrap implements ApplicationContextAware {
 
     /**
@@ -36,16 +38,26 @@ public class ProviderBootstrap implements ApplicationContextAware {
      * @return {@link RpcResponse}
      */
     public RpcResponse invokeRequest(RpcRequest request) {
+        RpcResponse rpcResponse = new RpcResponse();
         Object bean = skeleton.get(request.getService());
         try {
             Method method = findMethod(bean.getClass(), request.getMethodName());
+            // 不允许调用 Object 的方法
+            if(Object.class.equals(method.getDeclaringClass())) {
+                log.warn(method + "方式为Object自带方法，不允许调用");
+                return null;
+            }
             Object result = method.invoke(bean, request.getParameters());
-            return new RpcResponse(true, result);
+            rpcResponse.setStatus(true);
+            rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            rpcResponse.setStatus(false);
+            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            rpcResponse.setStatus(false);
+            rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
+        return rpcResponse;
     }
 
 

@@ -13,4 +13,10 @@ public interface UserService {
      * @return {@link User}
      */
     User getUserById(Integer id);
+
+    int getId(Integer id);
+
+    String getName();
+
+    int getHeight();
 }

@@ -22,6 +22,7 @@
         <module>lclrpc-core</module>
         <module>lclrpc-demo-api</module>
         <module>lclrpc-demo-provider</module>
+        <module>lclrpc-demo-consumer</module>
     </modules>
 
 

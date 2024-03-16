@@ -21,4 +21,19 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Integer id) {
         return new User(id, "lcl-" + System.currentTimeMillis());
     }
+
+    @Override
+    public int getId(Integer id) {
+        return id;
+    }
+
+    @Override
+    public String getName() {
+        return "lcl";
+    }
+
+    @Override
+    public int getHeight() {
+        return 175;
+    }
 }

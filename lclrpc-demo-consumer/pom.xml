@@ -7,14 +7,24 @@
 		<artifactId>lclrpc</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>lclrpc-core</artifactId>
+	<artifactId>lclrpc-demo-consumer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lclrpc-core</name>
-	<description>lclrpc-core</description>
+	<name>lclrpc-demo-consumer</name>
+	<description>lclrpc-demo-consumer</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.lcl</groupId>
+			<artifactId>lclrpc-demo-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lcl</groupId>
+			<artifactId>lclrpc-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -29,16 +39,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>4.12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.83</version>
 		</dependency>
 	</dependencies>
 
