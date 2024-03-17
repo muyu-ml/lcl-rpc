@@ -50,7 +50,7 @@ public class LclrpcDemoConsumerApplication {
 		return user;
 	}
 
-	@Bean
+//	@Bean
 	ApplicationRunner consumer_runner() {
 		return args -> {
 			User user = userService.getUserById(100);

@@ -2,6 +2,7 @@ package com.lcl.lclrpc.core.consumer;
 
 import com.lcl.lclrpc.core.annotation.LclConsumer;
 import com.lcl.lclrpc.core.api.Loadbalancer;
+import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.api.RpcContext;
 import lombok.Data;
@@ -32,18 +33,11 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         // 获取路由和负载均衡
         Router router = applicationContext.getBean(Router.class);
         Loadbalancer loadbalancer = applicationContext.getBean(Loadbalancer.class);
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
 
         RpcContext context = new RpcContext();
         context.setRouter(router);
         context.setLoadbalancer(loadbalancer);
-
-
-        // 获取服务提供者的地址
-        String urls = environment.getProperty("lclrpc.providers", "");
-        if(Strings.isEmpty(urls)){
-            log.error("lclrpc.providers is empty");
-        }
-        List<String> providers = List.of(urls.split(","));
 
 
         String[] names = applicationContext.getBeanDefinitionNames();
@@ -56,7 +50,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
                     String serviceName = service.getCanonicalName();
                     Object object = stub.get(serviceName);
                     if (object == null) {
-                        object = createConsumer(service, context, providers);
+                        object = createConsumerFromRegistry(service, context, rc);
                     }
                     f.setAccessible(true);
                     f.set(bean, object);
@@ -69,6 +63,12 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createConsumer(Class<?> service, RpcContext context, List<String> providers) {
         return Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[]{service}, new LclInvoketionHandler(service, context, providers));
+    }
+
+    private Object createConsumerFromRegistry(Class<?> service, RpcContext context, RegistryCenter rc) {
+        String serviceName = service.getCanonicalName();
+        List<String> providers = rc.fetchAll(serviceName);
+        return createConsumer(service, context, providers);
     }
 
     private List<Field> findAnnotatedFields(Class<?> aClass) {

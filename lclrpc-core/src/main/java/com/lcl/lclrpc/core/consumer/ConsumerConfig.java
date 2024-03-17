@@ -1,17 +1,25 @@
 package com.lcl.lclrpc.core.consumer;
 
 import com.lcl.lclrpc.core.api.Loadbalancer;
+import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.cluster.RandomLoadbalancer;
 import com.lcl.lclrpc.core.cluster.RoundRibonLoadbalancer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import java.util.List;
+
 @Configuration
 public class ConsumerConfig {
+
+    @Value("${lclrpc.providers}")
+    String services;
+
     @Bean
     ConsumerBootStrap createConsumerBootStrap() {
         return new ConsumerBootStrap();
@@ -35,5 +43,10 @@ public class ConsumerConfig {
     @Bean
     public Router router() {
         return Router.Default;
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public RegistryCenter consumer_rc() {
+        return new RegistryCenter.StacticRegistryCenter(List.of(services.split(",")));
     }
 }
