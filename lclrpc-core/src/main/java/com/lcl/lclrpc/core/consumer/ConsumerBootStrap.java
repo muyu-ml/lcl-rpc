@@ -5,6 +5,8 @@ import com.lcl.lclrpc.core.api.Loadbalancer;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.api.RpcContext;
+import com.lcl.lclrpc.core.registry.ChangeListener;
+import com.lcl.lclrpc.core.registry.Event;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @Slf4j
@@ -67,8 +70,17 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createConsumerFromRegistry(Class<?> service, RpcContext context, RegistryCenter rc) {
         String serviceName = service.getCanonicalName();
-        List<String> providers = rc.fetchAll(serviceName);
+        List<String> providers = mapUrl(rc.fetchAll(serviceName));
+        providers.forEach(x -> log.info("fetch provider: {}", x));
+        rc.subscribe(serviceName, event -> {
+            providers.clear();
+            providers.addAll(mapUrl(event.getData()));
+        });
         return createConsumer(service, context, providers);
+    }
+
+    private List<String> mapUrl(List<String> nodes){
+        return nodes.stream().map(x -> "http://" + x.replace("_", ":")).collect(Collectors.toList());
     }
 
     private List<Field> findAnnotatedFields(Class<?> aClass) {

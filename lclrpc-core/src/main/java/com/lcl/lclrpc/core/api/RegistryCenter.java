@@ -1,9 +1,12 @@
 package com.lcl.lclrpc.core.api;
 
+import com.lcl.lclrpc.core.registry.ChangeListener;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListenerBuilder;
+
 import java.util.List;
 
 public interface RegistryCenter {
-    void start();
+    void start();      
     void stop();
 
     // provider 侧
@@ -13,7 +16,7 @@ public interface RegistryCenter {
     // consumer 侧
     List<String> fetchAll(String service);
 
-//    void subscribe();
+    void subscribe(String service, ChangeListener listener);
 
     class StacticRegistryCenter implements RegistryCenter {
 
@@ -46,6 +49,11 @@ public interface RegistryCenter {
         @Override
         public List<String> fetchAll(String service) {
             return providers;
+        }
+
+        @Override
+        public void subscribe(String service, ChangeListener listener) {
+
         }
     }
 }
