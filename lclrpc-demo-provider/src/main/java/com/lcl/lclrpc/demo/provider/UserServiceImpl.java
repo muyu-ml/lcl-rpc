@@ -3,6 +3,8 @@ package com.lcl.lclrpc.demo.provider;
 import com.lcl.lclrpc.core.annotation.LclProvider;
 import com.lcl.lclrpc.demo.api.User;
 import com.lcl.lclrpc.demo.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,13 +15,17 @@ import org.springframework.stereotype.Component;
 @Component
 @LclProvider
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    Environment environment;
+
     /**
      * @param id
      * @return {@link User}
      */
     @Override
     public User getUserById(Integer id) {
-        return new User(id, "lcl-" + System.currentTimeMillis());
+        return new User(id, "lcl-" + environment.getProperty("server.port") + "_" + System.currentTimeMillis());
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.lcl.lclrpc.demo.consumer;
 import com.lcl.lclrpc.core.annotation.LclConsumer;
+import com.lcl.lclrpc.core.api.RpcRequest;
+import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.consumer.ConsumerConfig;
 import com.lcl.lclrpc.demo.api.Order;
 import com.lcl.lclrpc.demo.api.OrderService;
@@ -10,6 +12,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author conglongli
@@ -18,6 +23,7 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication
 @Import({ConsumerConfig.class})
+@RestController
 public class LclrpcDemoConsumerApplication {
 
 	/**
@@ -36,6 +42,14 @@ public class LclrpcDemoConsumerApplication {
 	/**
 	 * @return {@link ApplicationRunner}
 	 */
+
+	@RequestMapping("/")
+	public User getUserById(int id) {
+		User user = userService.getUserById(id);
+		System.out.println(user);
+		return user;
+	}
+
 	@Bean
 	ApplicationRunner consumer_runner() {
 		return args -> {

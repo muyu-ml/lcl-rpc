@@ -1,5 +1,5 @@
 ### 获取用户信息
-POST http://localhost:8080/
+POST http://localhost:8082/
 Content-Type: application/json
 
 {
@@ -7,6 +7,9 @@ Content-Type: application/json
   "methodSign": "getUserById@1_java.lang.Integer",
   "parameters": [100]
 }
+
+### 获取用户信息
+GET http://localhost:8088/?id=101
 
 ### mock
 POST http://localhost:8080/
