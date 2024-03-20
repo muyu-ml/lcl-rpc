@@ -1,8 +1,6 @@
 package com.lcl.lclrpc.core.consumer;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.lcl.lclrpc.core.api.*;
 import com.lcl.lclrpc.core.util.MethodUtils;
 import com.lcl.lclrpc.core.util.TypeUtils;
@@ -13,7 +11,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -56,21 +53,7 @@ public class LclInvoketionHandler implements InvocationHandler {
         if(rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             // 不是JSONObject 类型说明是基本数据类型，可以直接返回
-            if(data instanceof JSONObject) {
-                JSONObject jsonResult = (JSONObject) data;
-                return JSON.parseObject(jsonResult.toJSONString(), method.getReturnType());
-            }
-            if(data instanceof JSONArray jsonArray) {
-                // 将 JSONArray 转换为方法签名的ReturnType数组类型
-                Object[] objArray = jsonArray.toArray();
-                Class<?> componentType = method.getReturnType().getComponentType();
-                Object resultArray = Array.newInstance(componentType, objArray.length);
-                for (int i = 0; i < objArray.length; i++) {
-                    Array.set(resultArray, i, objArray[i]);
-                }
-                return resultArray;
-            }
-            return TypeUtils.cast(data, method.getReturnType());
+            return TypeUtils.castMethodReturnType(method, data);
         } else {
             Exception ex = rpcResponse.getEx();
             throw new RuntimeException(ex);

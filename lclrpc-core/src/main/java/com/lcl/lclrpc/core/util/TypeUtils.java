@@ -1,8 +1,12 @@
 package com.lcl.lclrpc.core.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,5 +74,25 @@ public class TypeUtils {
         }
 
         return null;
+    }
+
+
+    @Nullable
+    public static Object castMethodReturnType(Method method, Object data) {
+        if(data instanceof JSONObject) {
+            JSONObject jsonResult = (JSONObject) data;
+            return JSON.parseObject(jsonResult.toJSONString(), method.getReturnType());
+        }
+        if(data instanceof JSONArray jsonArray) {
+            // 将 JSONArray 转换为方法签名的ReturnType数组类型
+            Object[] objArray = jsonArray.toArray();
+            Class<?> componentType = method.getReturnType().getComponentType();
+            Object resultArray = Array.newInstance(componentType, objArray.length);
+            for (int i = 0; i < objArray.length; i++) {
+                Array.set(resultArray, i, objArray[i]);
+            }
+            return resultArray;
+        }
+        return TypeUtils.cast(data, method.getReturnType());
     }
 }

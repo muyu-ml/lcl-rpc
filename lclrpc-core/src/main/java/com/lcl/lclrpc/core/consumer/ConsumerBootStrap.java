@@ -5,11 +5,9 @@ import com.lcl.lclrpc.core.api.Loadbalancer;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.api.RpcContext;
-import com.lcl.lclrpc.core.registry.ChangeListener;
-import com.lcl.lclrpc.core.registry.Event;
+import com.lcl.lclrpc.core.util.MethodUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -46,7 +44,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {
             Object bean = applicationContext.getBean(name);
-            List<Field> fields = findAnnotatedFields(bean.getClass());
+            List<Field> fields = MethodUtils.findAnnotatedFields(bean.getClass(), LclConsumer.class);
             fields.stream().forEach(f -> {
                 try {
                     Class<?> service = f.getType();
@@ -83,17 +81,4 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         return nodes.stream().map(x -> "http://" + x.replace("_", ":")).collect(Collectors.toList());
     }
 
-    private List<Field> findAnnotatedFields(Class<?> aClass) {
-        List<Field> result = new ArrayList<>();
-        while (aClass != null && aClass != Object.class) {
-            Field[] fields = aClass.getDeclaredFields();
-            for (Field field : fields) {
-                if (field.isAnnotationPresent(LclConsumer.class)) {
-                    result.add(field);
-                }
-            }
-            aClass = aClass.getSuperclass();
-        }
-        return result;
-    }
 }
