@@ -7,8 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class TypeUtils {
 
@@ -79,20 +80,63 @@ public class TypeUtils {
 
     @Nullable
     public static Object castMethodReturnType(Method method, Object data) {
-        if(data instanceof JSONObject) {
-            JSONObject jsonResult = (JSONObject) data;
-            return JSON.parseObject(jsonResult.toJSONString(), method.getReturnType());
-        }
-        if(data instanceof JSONArray jsonArray) {
-            // 将 JSONArray 转换为方法签名的ReturnType数组类型
-            Object[] objArray = jsonArray.toArray();
-            Class<?> componentType = method.getReturnType().getComponentType();
-            Object resultArray = Array.newInstance(componentType, objArray.length);
-            for (int i = 0; i < objArray.length; i++) {
-                Array.set(resultArray, i, objArray[i]);
+
+        Class<?> type = method.getReturnType();
+        System.out.println("method.getReturnType() = " + type);
+        if (data instanceof JSONObject jsonResult) {
+            if (Map.class.isAssignableFrom(type)) {
+                Map resultMap = new HashMap();
+                Type genericReturnType = method.getGenericReturnType();
+                System.out.println(genericReturnType);
+                if (genericReturnType instanceof ParameterizedType parameterizedType) {
+                    Class<?> keyType = (Class<?>)parameterizedType.getActualTypeArguments()[0];
+                    Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
+                    System.out.println("keyType  : " + keyType);
+                    System.out.println("valueType: " + valueType);
+                    jsonResult.entrySet().stream().forEach(
+                            e -> {
+                                Object key = cast(e.getKey(), keyType);
+                                Object value = cast(e.getValue(), valueType);
+                                resultMap.put(key, value);
+                            }
+                    );
+                }
+                return resultMap;
             }
-            return resultArray;
+            return jsonResult.toJavaObject(type);
+        } else if (data instanceof JSONArray jsonArray) {
+            Object[] array = jsonArray.toArray();
+            if (type.isArray()) {
+                Class<?> componentType = type.getComponentType();
+                Object resultArray = Array.newInstance(componentType, array.length);
+                for (int i = 0; i < array.length; i++) {
+                    if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")) {
+                        Array.set(resultArray, i, array[i]);
+                    } else {
+                        Object castObject = cast(array[i], componentType);
+                        Array.set(resultArray, i, castObject);
+                    }
+                }
+                return resultArray;
+            } else if (List.class.isAssignableFrom(type)) {
+                List<Object> resultList = new ArrayList<>(array.length);
+                Type genericReturnType = method.getGenericReturnType();
+                System.out.println(genericReturnType);
+                if (genericReturnType instanceof ParameterizedType parameterizedType) {
+                    Type actualType = parameterizedType.getActualTypeArguments()[0];
+                    System.out.println(actualType);
+                    for (Object o : array) {
+                        resultList.add(cast(o, (Class<?>) actualType));
+                    }
+                } else {
+                    resultList.addAll(Arrays.asList(array));
+                }
+                return resultList;
+            } else {
+                return null;
+            }
+        } else {
+            return cast(data, type);
         }
-        return TypeUtils.cast(data, method.getReturnType());
     }
 }
