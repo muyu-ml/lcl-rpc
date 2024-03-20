@@ -5,6 +5,7 @@ import com.lcl.lclrpc.core.annotation.LclProvider;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
+import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
 import com.lcl.lclrpc.core.util.TypeUtils;
@@ -49,7 +50,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
      */
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
-    private String instance;
+    private InstanceMeta instance;
     @Value("${server.port}")
     private int port;
 
@@ -71,7 +72,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         log.info("====>>> ProviderBootstrap start");
         // 注册服务
         String ip = InetAddress.getLocalHost().getHostAddress();
-        this.instance = ip + "_" + port;
+        this.instance = InstanceMeta.http(ip, port);
         rc.start();
         skeleton.keySet().forEach(this :: registerService);
     }

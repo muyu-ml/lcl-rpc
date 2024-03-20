@@ -1,8 +1,8 @@
 package com.lcl.lclrpc.core.consumer;
 
 import com.lcl.lclrpc.core.api.*;
-import com.lcl.lclrpc.core.consumer.HttpInvoker;
 import com.lcl.lclrpc.core.consumer.http.OkHttpInvoker;
+import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
 import com.lcl.lclrpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +18,13 @@ public class LclInvoketionHandler implements InvocationHandler {
     Class<?> service;
 
     RpcContext context;
-    List<String> providers;
+    List<InstanceMeta> providers;
 
     HttpInvoker httpInvoker = new OkHttpInvoker();
 
 
 
-    public LclInvoketionHandler(Class<?> service, RpcContext context, List<String> providers) {
+    public LclInvoketionHandler(Class<?> service, RpcContext context, List<InstanceMeta> providers) {
         this.service = service;
         this.context = context;
         this.providers = providers;
@@ -42,10 +42,10 @@ public class LclInvoketionHandler implements InvocationHandler {
         rpcRequest.setParameters(args);
 
         // 路由选择一个服务提供者
-        List<String> urls = context.getRouter().route(providers);
-        String url = (String) context.getLoadbalancer().choose(urls);
-        log.info("loadbalancer choose url ====>>> {}", url);
-        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, url);
+        List<InstanceMeta> instances = context.getRouter().route(providers);
+        InstanceMeta instance = context.getLoadbalancer().choose(instances);
+        log.info("loadbalancer choose url ====>>> {}", instance);
+        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
 
         if(rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.consumer.HttpInvoker;
+import com.lcl.lclrpc.core.meta.InstanceMeta;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
