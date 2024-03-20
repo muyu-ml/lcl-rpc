@@ -3,6 +3,8 @@ server:
 
 lclrpc:
   providers: http://localhost:8081/,http://localhost:8082/,http://localhost:8083/
+  zkServers: localhost:2181
+  zkRoot: lclrpc
 
 app:
   id: app1

@@ -3,3 +3,7 @@ app:
   namespace: public
   env: dev
   version: 1.0.0
+
+lclrpc:
+  zkServers: localhost:2181
+  zkRoot: lclrpc
