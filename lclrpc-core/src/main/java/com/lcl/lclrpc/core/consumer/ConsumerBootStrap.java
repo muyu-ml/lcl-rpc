@@ -6,9 +6,11 @@ import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.api.RpcContext;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
+import com.lcl.lclrpc.core.meta.ServiceMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -31,12 +33,21 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     ApplicationContext applicationContext;
     Environment environment;
 
+    @Value("${app.id}")
+    private String app;
+    @Value("${app.namespace}")
+    private String namespace;
+    @Value("${app.env}")
+    private String env;
+    @Value("${app.version}")
+    private String version;
+
     private Map<String, Object> stub = new HashMap<>();
 
     public void start() {
         // 获取路由和负载均衡
-        Router router = applicationContext.getBean(Router.class);
-        Loadbalancer loadbalancer = applicationContext.getBean(Loadbalancer.class);
+        Router<InstanceMeta> router = applicationContext.getBean(Router.class);
+        Loadbalancer<InstanceMeta> loadbalancer = applicationContext.getBean(Loadbalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
 
         RpcContext context = new RpcContext();
@@ -72,9 +83,11 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createConsumerFromRegistry(Class<?> service, RpcContext context, RegistryCenter rc) {
         String serviceName = service.getCanonicalName();
-        List<InstanceMeta> providers = rc.fetchAll(serviceName);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app).namespace(namespace).env(env).name(serviceName).version(version).build();
+        List<InstanceMeta> providers = rc.fetchAll(serviceMeta);
         providers.forEach(x -> log.info("fetch provider: {}", x));
-        rc.subscribe(serviceName, event -> {
+        rc.subscribe(serviceMeta, event -> {
             providers.clear();
             providers.addAll(event.getData());
         });

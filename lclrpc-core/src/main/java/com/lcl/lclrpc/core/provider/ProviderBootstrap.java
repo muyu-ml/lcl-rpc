@@ -1,14 +1,11 @@
 package com.lcl.lclrpc.core.provider;
 
-import com.alibaba.fastjson.JSON;
 import com.lcl.lclrpc.core.annotation.LclProvider;
 import com.lcl.lclrpc.core.api.RegistryCenter;
-import com.lcl.lclrpc.core.api.RpcRequest;
-import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
+import com.lcl.lclrpc.core.meta.ServiceMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
-import com.lcl.lclrpc.core.util.TypeUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Data;
@@ -20,15 +17,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * @author conglongli
@@ -53,6 +45,14 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private InstanceMeta instance;
     @Value("${server.port}")
     private int port;
+    @Value("${app.id}")
+    private String app;
+    @Value("${app.namespace}")
+    private String namespace;
+    @Value("${app.env}")
+    private String env;
+    @Value("${app.version}")
+    private String version;
 
 
 
@@ -85,12 +85,16 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void unregisterService(String service) {
-        rc.unregister(service, instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app).namespace(namespace).env(env).name(service).version(version).build();
+        rc.unregister(serviceMeta, instance);
     }
 
     private void registerService(String service) {
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app).namespace(namespace).env(env).name(service).version(version).build();
         // 注册服务
-        rc.register(service, instance);
+        rc.register(serviceMeta, instance);
     }
 
     /**

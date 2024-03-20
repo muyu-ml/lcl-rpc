@@ -1,6 +1,7 @@
 package com.lcl.lclrpc.core.api;
 
 import com.lcl.lclrpc.core.meta.InstanceMeta;
+import com.lcl.lclrpc.core.meta.ServiceMeta;
 import com.lcl.lclrpc.core.registry.ChangeListener;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListenerBuilder;
 
@@ -11,13 +12,13 @@ public interface RegistryCenter {
     void stop();
 
     // provider 侧
-    void register(String service, InstanceMeta instance);
-    void unregister(String service, InstanceMeta instance);
+    void register(ServiceMeta service, InstanceMeta instance);
+    void unregister(ServiceMeta service, InstanceMeta instance);
 
     // consumer 侧
-    List<InstanceMeta> fetchAll(String service);
+    List<InstanceMeta> fetchAll(ServiceMeta service);
 
-    void subscribe(String service, ChangeListener listener);
+    void subscribe(ServiceMeta service, ChangeListener listener);
 
     class StacticRegistryCenter implements RegistryCenter {
 
@@ -38,22 +39,22 @@ public interface RegistryCenter {
         }
 
         @Override
-        public void register(String service, InstanceMeta instance) {
+        public void register(ServiceMeta service, InstanceMeta instance) {
             System.out.println("StacticRegistryCenter register");
         }
 
         @Override
-        public void unregister(String service, InstanceMeta instance) {
+        public void unregister(ServiceMeta service, InstanceMeta instance) {
             System.out.println("StacticRegistryCenter unregister");
         }
 
         @Override
-        public List<InstanceMeta> fetchAll(String service) {
+        public List<InstanceMeta> fetchAll(ServiceMeta service) {
             return providers;
         }
 
         @Override
-        public void subscribe(String service, ChangeListener listener) {
+        public void subscribe(ServiceMeta service, ChangeListener listener) {
 
         }
     }

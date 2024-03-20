@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+
+/**
+ * 描述provider服务实例的元数据
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

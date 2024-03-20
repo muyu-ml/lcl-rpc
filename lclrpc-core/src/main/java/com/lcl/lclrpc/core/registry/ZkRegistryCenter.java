@@ -2,6 +2,7 @@ package com.lcl.lclrpc.core.registry;
 
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
+import com.lcl.lclrpc.core.meta.ServiceMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -40,8 +41,8 @@ public class ZkRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public void register(String service, InstanceMeta instance) {
-        String servicePath = "/" + service;
+    public void register(ServiceMeta service, InstanceMeta instance) {
+        String servicePath = "/" + service.toPath();
         try {
             // 创建服务持久化节点
             if(client.checkExists().forPath(servicePath) == null) {
@@ -59,8 +60,8 @@ public class ZkRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public void unregister(String service, InstanceMeta instance) {
-        String servicePath = "/" + service;
+    public void unregister(ServiceMeta service, InstanceMeta instance) {
+        String servicePath = "/" + service.toPath();
         try {
             // 如果服务节点不存在，则直接返回
             if(client.checkExists().forPath(servicePath) == null) {
@@ -76,8 +77,8 @@ public class ZkRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public List<InstanceMeta> fetchAll(String service) {
-        String servicePath = "/" + service;
+    public List<InstanceMeta> fetchAll(ServiceMeta service) {
+        String servicePath = "/" + service.toPath();
         try {
             List<String> nodes = client.getChildren().forPath(servicePath);
             log.info("Fetch all service ......");
@@ -98,8 +99,8 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     @Override
     @SneakyThrows
-    public void subscribe(String service, ChangeListener listener) {
-        final TreeCache cache = TreeCache.newBuilder(client, "/" + service)
+    public void subscribe(ServiceMeta service, ChangeListener listener) {
+        final TreeCache cache = TreeCache.newBuilder(client, "/" + service.toPath())
                 .setCacheData(true).setMaxDepth(2)
                 .build();
         cache.getListenable().addListener((curator, event) -> {
