@@ -3,17 +3,15 @@ package com.lcl.lclrpc.core.consumer;
 import com.lcl.lclrpc.core.api.Loadbalancer;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
-import com.lcl.lclrpc.core.cluster.RandomLoadbalancer;
 import com.lcl.lclrpc.core.cluster.RoundRibonLoadbalancer;
-import com.lcl.lclrpc.core.registry.ZkRegistryCenter;
+import com.lcl.lclrpc.core.meta.InstanceMeta;
+import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
 
 @Configuration
 public class ConsumerConfig {
@@ -37,12 +35,12 @@ public class ConsumerConfig {
     }
 
     @Bean
-    public Loadbalancer loadbalancer() {
+    public Loadbalancer<InstanceMeta> loadbalancer() {
         return new RoundRibonLoadbalancer();
     }
 
     @Bean
-    public Router router() {
+    public Router<InstanceMeta> router() {
         return Router.Default;
     }
 

@@ -98,30 +98,31 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     /**
-     * @param obj
+     * @param impl
      */
-    private void genIntrface(Object obj) {
+    private void genIntrface(Object impl) {
         // 兼容多接口
-        Arrays.stream(obj.getClass().getInterfaces()).forEach(
-                itfer -> {
-                    Method[] methods = itfer.getMethods();
+        Arrays.stream(impl.getClass().getInterfaces()).forEach(
+                service -> {
+                    Method[] methods = service.getMethods();
                     for (Method method : methods) {
                         if (MethodUtils.isObjectMethod(method)) {
                             continue;
                         }
-                        createProviderMeta(itfer, obj, method);
+                        createProviderMeta(service, impl, method);
                     }
                 }
         );
     }
 
-    private void createProviderMeta(Class<?> itfer, Object obj, Method method) {
-        ProviderMeta providerMeta = new ProviderMeta();
-        providerMeta.setMethod(method);
-        providerMeta.setMethodSign(MethodUtils.buildMethodSign(method));
-        providerMeta.setServiceImpl(obj);
-//        log.info("create a providerMeta: " + providerMeta);
-        skeleton.add(itfer.getCanonicalName(), providerMeta);
+    private void createProviderMeta(Class<?> service, Object impl, Method method) {
+        ProviderMeta providerMeta = ProviderMeta.builder()
+                .method(method)
+                .methodSign(MethodUtils.buildMethodSign(method))
+                .serviceImpl(impl)
+                .build();
+        log.info("create a providerMeta: " + providerMeta);
+        skeleton.add(service.getCanonicalName(), providerMeta);
     }
 
 }

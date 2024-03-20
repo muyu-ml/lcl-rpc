@@ -1,15 +1,12 @@
 package com.lcl.lclrpc.core.provider;
 
 import com.lcl.lclrpc.core.api.RegistryCenter;
-import com.lcl.lclrpc.core.consumer.ConsumerBootStrap;
-import com.lcl.lclrpc.core.registry.ZkRegistryCenter;
+import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
 
 /**
  * @author conglongli
