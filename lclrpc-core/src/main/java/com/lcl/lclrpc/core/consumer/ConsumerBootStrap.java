@@ -51,12 +51,13 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
                 try {
                     Class<?> service = f.getType();
                     String serviceName = service.getCanonicalName();
-                    Object object = stub.get(serviceName);
-                    if (object == null) {
-                        object = createConsumerFromRegistry(service, context, rc);
+                    Object consumer = stub.get(serviceName);
+                    if (consumer == null) {
+                        consumer = createConsumerFromRegistry(service, context, rc);
+                        stub.put(serviceName, consumer);
                     }
                     f.setAccessible(true);
-                    f.set(bean, object);
+                    f.set(bean, consumer);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
