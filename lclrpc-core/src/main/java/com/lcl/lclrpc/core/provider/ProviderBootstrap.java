@@ -1,5 +1,6 @@
 package com.lcl.lclrpc.core.provider;
 
+import com.alibaba.fastjson.JSON;
 import com.lcl.lclrpc.core.annotation.LclProvider;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.RpcRequest;
@@ -41,6 +42,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
      *
      */
     private ApplicationContext applicationContext;
+    RegistryCenter rc;
 
     /**
      *
@@ -59,31 +61,34 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @PostConstruct
     public void init() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(LclProvider.class);
+        rc = applicationContext.getBean(RegistryCenter.class);
         providers.forEach((k, v) -> System.out.println("provider: " + k + " -> " + v));
         providers.values().forEach(this::genIntrface);
     }
 
     @SneakyThrows
     public void start() {
+        log.info("====>>> ProviderBootstrap start");
         // 注册服务
         String ip = InetAddress.getLocalHost().getHostAddress();
         this.instance = ip + "_" + port;
+        rc.start();
         skeleton.keySet().forEach(this :: registerService);
     }
 
     @PreDestroy
     public void stop() {
+        log.info("====>>> ProviderBootstrap stop");
         skeleton.keySet().forEach(this :: unregisterService);
+        rc.stop();
     }
 
     private void unregisterService(String service) {
-        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         rc.unregister(service, instance);
     }
 
     private void registerService(String service) {
         // 注册服务
-        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         rc.register(service, instance);
     }
 
@@ -110,7 +115,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         providerMeta.setMethod(method);
         providerMeta.setMethodSign(MethodUtils.buildMethodSign(method));
         providerMeta.setServiceImpl(obj);
-        log.info("create a providerMeta: " + providerMeta);
+//        log.info("create a providerMeta: " + providerMeta);
         skeleton.add(itfer.getCanonicalName(), providerMeta);
     }
 
