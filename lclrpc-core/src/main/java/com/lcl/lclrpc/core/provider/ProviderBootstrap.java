@@ -104,15 +104,10 @@ public class ProviderBootstrap implements ApplicationContextAware {
         // 兼容多接口
         Arrays.stream(impl.getClass().getInterfaces()).forEach(
                 service -> {
-                    Method[] methods = service.getMethods();
-                    for (Method method : methods) {
-                        if (MethodUtils.isObjectMethod(method)) {
-                            continue;
-                        }
-                        createProviderMeta(service, impl, method);
-                    }
-                }
-        );
+                    Arrays.stream(service.getMethods())
+                            .filter(method -> !MethodUtils.isObjectMethod(method))
+                            .forEach(method -> createProviderMeta(service, impl, method));
+                });
     }
 
     private void createProviderMeta(Class<?> service, Object impl, Method method) {
