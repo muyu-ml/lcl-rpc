@@ -2,12 +2,13 @@ package com.lcl.lclrpc.demo.provider;
 
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
-import com.lcl.lclrpc.core.provider.ProviderBootstrap;
 import com.lcl.lclrpc.core.provider.ProviderConfig;
+import com.lcl.lclrpc.core.provider.ProviderInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class LclrpcDemoProviderApplication {
 	 *
 	 */
 	@Autowired
-	private ProviderBootstrap providerBootstrap;
+	private ProviderInvoker providerInvoker;
 
 	/**
 	 * 使用HTTP + JSON 作为序列化和通信协议
@@ -43,7 +44,7 @@ public class LclrpcDemoProviderApplication {
 	 */
 	@RequestMapping("/")
 	public RpcResponse invoke(@RequestBody RpcRequest request) {
-		return providerBootstrap.invoke(request);
+		return providerInvoker.invoke(request);
 	}
 
 
@@ -55,9 +56,9 @@ public class LclrpcDemoProviderApplication {
 //		return args -> {
 //			RpcRequest request = new RpcRequest();
 //			request.setService("com.lcl.lclrpc.demo.api.UserService");
-//			request.setMethodName("getUserById");
+//			request.setMethodSign("getUserById@1_java.lang.Integer");
 //			request.setParameters(new Object[]{100});
-//			RpcResponse rpcResponse = providerBootstrap.invokeRequest(request);
+//			RpcResponse rpcResponse = providerInvoker.invoke(request);
 //			System.out.println("return : " + rpcResponse);
 //		};
 //	}
