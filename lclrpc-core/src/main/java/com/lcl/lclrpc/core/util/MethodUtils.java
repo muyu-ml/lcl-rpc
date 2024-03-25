@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 public class MethodUtils {
 
     public static boolean isObjectMethod(Method method) {

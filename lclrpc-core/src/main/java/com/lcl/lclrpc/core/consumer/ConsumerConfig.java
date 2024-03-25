@@ -6,6 +6,7 @@ import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.cluster.RoundRibonLoadbalancer;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 @Configuration
+@Slf4j
 public class ConsumerConfig {
 
     @Value("${lclrpc.providers}")
@@ -28,9 +30,9 @@ public class ConsumerConfig {
     @Order(Integer.MIN_VALUE)
     public ApplicationRunner consumerRunner(@Autowired ConsumerBootStrap consumerBootStrap) {
         return args -> {
-            System.out.printf("ConsumerConfig starting...%n");
+            log.info("ConsumerConfig starting...");
             consumerBootStrap.start();
-            System.out.printf("ConsumerConfig started...%n");
+            log.info("ConsumerConfig started...");
         };
     }
 

@@ -59,7 +59,6 @@ public class LclrpcDemoProviderApplication {
 //			request.setMethodSign("getUserById@1_java.lang.Integer");
 //			request.setParameters(new Object[]{100});
 //			RpcResponse rpcResponse = providerInvoker.invoke(request);
-//			System.out.println("return : " + rpcResponse);
 //		};
 //	}
 }

@@ -7,3 +7,8 @@ app:
 lclrpc:
   zkServers: localhost:2181
   zkRoot: lclrpc
+
+logging:
+  level:
+    root: error
+    com.lcl.lclrpc: info

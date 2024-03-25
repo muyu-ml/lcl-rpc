@@ -63,7 +63,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     public void init() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(LclProvider.class);
         rc = applicationContext.getBean(RegistryCenter.class);
-        providers.forEach((k, v) -> System.out.println("provider: " + k + " -> " + v));
+        providers.forEach((k, v) -> log.info("provider: " + k + " -> " + v));
         providers.values().forEach(this::genIntrface);
     }
 
@@ -119,5 +119,6 @@ public class ProviderBootstrap implements ApplicationContextAware {
         log.info("create a providerMeta: " + providerMeta);
         skeleton.add(service.getCanonicalName(), providerMeta);
     }
+
 
 }

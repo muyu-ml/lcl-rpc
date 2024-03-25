@@ -44,7 +44,7 @@ public class LclInvoketionHandler implements InvocationHandler {
         // 路由选择一个服务提供者
         List<InstanceMeta> instances = context.getRouter().route(providers);
         InstanceMeta instance = context.getLoadbalancer().choose(instances);
-        log.info("loadbalancer choose url ====>>> {}", instance);
+        log.debug("loadbalancer choose url ====>>> {}", instance);
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
 
         if(rpcResponse.isStatus()) {

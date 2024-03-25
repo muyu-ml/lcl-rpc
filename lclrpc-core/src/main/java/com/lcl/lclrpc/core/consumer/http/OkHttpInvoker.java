@@ -5,6 +5,7 @@ import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.consumer.HttpInvoker;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,6 +14,7 @@ import okhttp3.RequestBody;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class OkHttpInvoker implements HttpInvoker {
 
     final static MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
@@ -30,14 +32,14 @@ public class OkHttpInvoker implements HttpInvoker {
     @Override
     public RpcResponse post(RpcRequest rpcRequest, String url) {
         String reqJson = JSON.toJSONString(rpcRequest);
-        System.out.printf("reqJson: %s%n", reqJson);
+        log.debug("reqJson: {}", reqJson);
         Request request = new Request.Builder()
                 .url(url)
                 .post(RequestBody.create(reqJson, JSONTYPE))
                 .build();
         try {
             String respJson = this.client.newCall(request).execute().body().string();
-            System.out.printf("respJson: %s%n", respJson);
+            log.debug("respJson: {}", respJson);
             RpcResponse rpcResponse = JSON.parseObject(respJson, RpcResponse.class);
             return rpcResponse;
         } catch (IOException e) {
