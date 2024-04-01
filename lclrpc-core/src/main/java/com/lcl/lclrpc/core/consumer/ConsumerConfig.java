@@ -1,9 +1,11 @@
 package com.lcl.lclrpc.core.consumer;
 
+import com.lcl.lclrpc.core.api.Filter;
 import com.lcl.lclrpc.core.api.Loadbalancer;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.cluster.RoundRibonLoadbalancer;
+import com.lcl.lclrpc.core.filter.CacheFilter;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,11 @@ public class ConsumerConfig {
     @Bean
     public Router<InstanceMeta> router() {
         return Router.Default;
+    }
+
+    @Bean
+    public Filter filter() {
+        return new CacheFilter();
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")

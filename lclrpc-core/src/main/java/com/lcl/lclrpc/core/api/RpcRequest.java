@@ -1,6 +1,7 @@
 package com.lcl.lclrpc.core.api;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author conglongli
@@ -8,6 +9,7 @@ import lombok.Data;
  * @doc
  */
 @Data
+@ToString
 public class RpcRequest {
     /**
      * 服务名

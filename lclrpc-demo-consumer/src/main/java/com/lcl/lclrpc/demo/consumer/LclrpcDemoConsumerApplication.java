@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -46,7 +47,7 @@ public class LclrpcDemoConsumerApplication {
 	 */
 
 	@RequestMapping("/")
-	public User getUserById(int id) {
+	public User getUserById(@RequestParam(name="id") int id) {
 		User user = userService.getUserById(id);
 		return user;
 	}

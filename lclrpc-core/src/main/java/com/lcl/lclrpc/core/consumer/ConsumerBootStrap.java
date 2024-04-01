@@ -1,10 +1,7 @@
 package com.lcl.lclrpc.core.consumer;
 
 import com.lcl.lclrpc.core.annotation.LclConsumer;
-import com.lcl.lclrpc.core.api.Loadbalancer;
-import com.lcl.lclrpc.core.api.RegistryCenter;
-import com.lcl.lclrpc.core.api.Router;
-import com.lcl.lclrpc.core.api.RpcContext;
+import com.lcl.lclrpc.core.api.*;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.meta.ServiceMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
@@ -49,10 +46,12 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         Router<InstanceMeta> router = applicationContext.getBean(Router.class);
         Loadbalancer<InstanceMeta> loadbalancer = applicationContext.getBean(Loadbalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().toList();
 
         RpcContext context = new RpcContext();
         context.setRouter(router);
         context.setLoadbalancer(loadbalancer);
+        context.setFilters(filters);
 
 
         String[] names = applicationContext.getBeanDefinitionNames();

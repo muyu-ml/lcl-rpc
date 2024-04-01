@@ -6,6 +6,8 @@ import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.util.MethodUtils;
 import com.lcl.lclrpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -41,12 +43,35 @@ public class LclInvoketionHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.buildMethodSign(method));
         rpcRequest.setParameters(args);
 
+        // 前置过滤器
+        for(Filter filter : context.getFilters()) {
+            Object preResult = filter.preFilter(rpcRequest);
+            if(preResult != null) {
+                log.debug("{} ========>>>>: {}", filter.getClass(), preResult);
+                return preResult;
+            }
+        }
+
         // 路由选择一个服务提供者
         List<InstanceMeta> instances = context.getRouter().route(providers);
         InstanceMeta instance = context.getLoadbalancer().choose(instances);
         log.debug("loadbalancer choose url ====>>> {}", instance);
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
 
+        Object result = castResponseToReturnResult(method, rpcResponse);
+        // 后置过滤器
+        for(Filter filter : context.getFilters()) {
+            Object filterResult = filter.postFilter(rpcRequest, rpcResponse, result);
+            if(filterResult != null){
+                return filterResult;
+            }
+        }
+
+        return castResponseToReturnResult(method, rpcResponse);
+    }
+
+    @Nullable
+    private static Object castResponseToReturnResult(Method method, RpcResponse<?> rpcResponse) {
         if(rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             // 不是JSONObject 类型说明是基本数据类型，可以直接返回
