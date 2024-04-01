@@ -11,9 +11,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>lclrpc-demo-api</name>
     <description>lclrpc-demo-api</description>
-    <properties>
-        <java.version>17</java.version>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
