@@ -67,6 +67,7 @@
 						</exclude>
 					</excludes>
 				</configuration>
+				<!-- 打 fat-jar-->
 				<executions>
 					<execution>
 						<goals>
@@ -74,6 +75,21 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<!--  增加打包单测插件-->
+			<!--  使用dependencyManagement导入spring-boot-dependencies只会引入依赖，不会引入插件，因此对于单测插件需要单独引入；-->
+			<!--  使用父pom引入spring-boot-dependencies则可以进入插件，不需要单独处理-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.3</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit-platform</artifactId>
+						<version>3.2.3</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

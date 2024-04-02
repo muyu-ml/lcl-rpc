@@ -4,6 +4,7 @@ app:
   env: dev
   version: 1.0.0
 
+
 lclrpc:
   zkServers: localhost:2181
   zkRoot: lclrpc
@@ -12,3 +13,6 @@ logging:
   level:
     root: error
     com.lcl.lclrpc: info
+
+server:
+  port: 8080
