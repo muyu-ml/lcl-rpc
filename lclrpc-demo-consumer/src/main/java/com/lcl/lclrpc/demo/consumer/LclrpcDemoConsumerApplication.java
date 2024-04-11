@@ -54,16 +54,18 @@ public class LclrpcDemoConsumerApplication {
 		return user;
 	}
 
+	@RequestMapping("/find")
+	public User find(@RequestParam("timeout") int timeout) {
+		long start = System.currentTimeMillis();
+		User user = userService.find(1000);
+		log.info("userService.find  =======>>>>>  time: " + (System.currentTimeMillis() - start));
+		return user;
+	}
+
 	@Bean
 	public ApplicationRunner consumer_runner() {
 		return x -> {
-
-			long start = System.currentTimeMillis();
-			userService.findById(1200);
-			System.out.println("userService.find take "
-					+ (System.currentTimeMillis()-start) + " ms");
-
-			 testAll();
+//			 testAll();
 		};
 	}
 

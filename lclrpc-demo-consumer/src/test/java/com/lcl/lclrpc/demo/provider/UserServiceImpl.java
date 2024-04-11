@@ -104,4 +104,9 @@ public class UserServiceImpl implements UserService {
         if(flag) throw new RuntimeException("just throw an exception");
         return new User(100, "Lcl100");
     }
+
+    @Override
+    public User find(int timeout) {
+        return new User(100, "Lcl100");
+    }
 }

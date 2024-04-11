@@ -49,10 +49,10 @@ public class ConsumerConfig {
         return Router.Default;
     }
 
-    @Bean
-    public Filter filter1() {
-        return new CacheFilter();
-    }
+//    @Bean
+//    public Filter filter1() {
+//        return new CacheFilter();
+//    }
 
 //    @Bean
 //    public Filter filter2() {

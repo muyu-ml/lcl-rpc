@@ -38,6 +38,10 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     private String env;
     @Value("${app.version}")
     private String version;
+    @Value("${app.retries}")
+    private int retries;
+    @Value("${app.timeout}")
+    private int timeout;
 
     private Map<String, Object> stub = new HashMap<>();
 
@@ -52,7 +56,8 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         context.setRouter(router);
         context.setLoadbalancer(loadbalancer);
         context.setFilters(filters);
-
+        context.getParameters().put("app.retries", String.valueOf(retries));
+        context.getParameters().put("app.timeout", String.valueOf(timeout));
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {
