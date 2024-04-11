@@ -77,8 +77,11 @@ public class LclInvoketionHandler implements InvocationHandler {
             // 不是JSONObject 类型说明是基本数据类型，可以直接返回
             return TypeUtils.castMethodReturnType(method, data);
         } else {
-            Exception ex = rpcResponse.getEx();
-            throw new RuntimeException(ex);
+            Exception exception = rpcResponse.getEx();
+            if(exception instanceof LclRpcException ex){
+                throw ex;
+            }
+            throw new LclRpcException(exception, LclRpcException.UnKnownEx);
         }
     }
 

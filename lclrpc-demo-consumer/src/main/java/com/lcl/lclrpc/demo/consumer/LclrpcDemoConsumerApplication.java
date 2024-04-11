@@ -63,7 +63,7 @@ public class LclrpcDemoConsumerApplication {
 			System.out.println("userService.find take "
 					+ (System.currentTimeMillis()-start) + " ms");
 
-			// testAll();
+			 testAll();
 		};
 	}
 

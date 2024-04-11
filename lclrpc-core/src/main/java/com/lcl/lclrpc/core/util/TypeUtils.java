@@ -35,15 +35,20 @@ public class TypeUtils {
             return jsonObject.toJavaObject(type);
         }
 
-        if(type.isArray()){
-            if(origin instanceof List list){
+        if(type.isArray()) {
+            if(origin instanceof List list) {
                 origin = list.toArray();
             }
             int length = Array.getLength(origin);
             Class<?> componentType = type.getComponentType();
             Object resultArray = Array.newInstance(componentType, length);
             for (int i = 0; i < length; i++) {
-                Array.set(resultArray, i, Array.get(origin, i));
+                if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")) {
+                    Array.set(resultArray, i, Array.get(origin, i));
+                } else {
+                    Object castObject = cast(Array.get(origin, i), componentType);
+                    Array.set(resultArray, i, castObject);
+                }
             }
             return resultArray;
         }

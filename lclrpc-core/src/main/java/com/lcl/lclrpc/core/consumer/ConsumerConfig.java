@@ -49,15 +49,15 @@ public class ConsumerConfig {
         return Router.Default;
     }
 
-//    @Bean
-//    public Filter filter1() {
-//        return new CacheFilter();
-//    }
-
     @Bean
-    public Filter filter2() {
-        return new MockFilter();
+    public Filter filter1() {
+        return new CacheFilter();
     }
+
+//    @Bean
+//    public Filter filter2() {
+//        return new MockFilter();
+//    }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public RegistryCenter consumer_rc() {

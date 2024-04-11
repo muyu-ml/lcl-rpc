@@ -1,5 +1,6 @@
 package com.lcl.lclrpc.core.provider;
 
+import com.lcl.lclrpc.core.api.LclRpcException;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
@@ -37,10 +38,10 @@ public class ProviderInvoker {
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
             rpcResponse.setStatus(false);
-            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
+            rpcResponse.setEx(new LclRpcException(e.getTargetException().getMessage()));
         } catch (IllegalAccessException e) {
             rpcResponse.setStatus(false);
-            rpcResponse.setEx(new RuntimeException(e.getMessage()));
+            rpcResponse.setEx(new LclRpcException(e.getMessage()));
         }
         return rpcResponse;
     }
