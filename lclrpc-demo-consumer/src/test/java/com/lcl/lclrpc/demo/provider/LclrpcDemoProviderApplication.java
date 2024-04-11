@@ -46,19 +46,5 @@ public class LclrpcDemoProviderApplication {
 		return providerInvoker.invoke(request);
 	}
 
-
-	/**
-	 * @return {@link ApplicationRunner}
-	 */
-//	@Bean
-//	ApplicationRunner providerRun(){
-//		return args -> {
-//			RpcRequest request = new RpcRequest();
-//			request.setService("com.lcl.lclrpc.demo.api.UserService");
-//			request.setMethodSign("getUserById@1_java.lang.Integer");
-//			request.setParameters(new Object[]{100});
-//			RpcResponse rpcResponse = providerInvoker.invoke(request);
-//		};
-//	}
 }
 

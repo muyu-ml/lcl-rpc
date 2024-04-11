@@ -1,32 +1,42 @@
 package com.lcl.lclrpc.demo.api;
 
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author conglongli
  * @date 2024/03/07
  */
 public interface UserService {
 
-    /**
-     * 根据id获取用户信息
-     * @param id
-     * @return {@link User}
-     */
-    User getUserById(Integer id);
+    User findById(int id);
 
-    User getUserById(Integer id, String name);
+    User findById(int id, String name);
 
-    int getId(Integer id);
+    long getId(long id);
+
+    long getId(User user);
+
+    long getId(float id);
 
     String getName();
 
-    long getHeight();
-
-    long getHeight(User user);
+    String getName(int id);
 
     int[] getIds();
-
     long[] getLongIds();
-
     int[] getIds(int[] ids);
+
+    User[] findUsers(User[] users);
+
+    List<User> getList(List<User> userList);
+
+    Map<String, User> getMap(Map<String, User> userMap);
+
+    Boolean getFlag(boolean flag);
+
+    User findById(long id);
+
+    User ex(boolean flag);
 }
