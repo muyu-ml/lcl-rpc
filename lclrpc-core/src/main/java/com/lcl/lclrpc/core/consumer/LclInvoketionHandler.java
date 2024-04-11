@@ -78,10 +78,10 @@ public class LclInvoketionHandler implements InvocationHandler {
             return TypeUtils.castMethodReturnType(method, data);
         } else {
             Exception exception = rpcResponse.getEx();
-            if(exception instanceof LclRpcException ex){
+            if(exception instanceof RpcException ex){
                 throw ex;
             }
-            throw new LclRpcException(exception, LclRpcException.UnKnownEx);
+            throw new RpcException(exception, RpcException.UnKnownEx);
         }
     }
 

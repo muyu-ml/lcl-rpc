@@ -3,34 +3,35 @@ package com.lcl.lclrpc.core.api;
 import lombok.Data;
 
 @Data
-public class LclRpcException extends RuntimeException{
+public class RpcException extends RuntimeException{
 
     private String errorCode;
 
-    public LclRpcException() {
+    public RpcException() {
     }
 
-    public LclRpcException(String message) {
+    public RpcException(String message) {
         super(message);
     }
 
-    public LclRpcException(String message, Throwable cause) {
+    public RpcException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public LclRpcException(Throwable cause) {
+    public RpcException(Throwable cause) {
         super(cause);
     }
 
-    public LclRpcException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public RpcException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public LclRpcException(Throwable cause, String errorCode) {
+    public RpcException(Throwable cause, String errorCode) {
         super(cause);
         this.errorCode = errorCode;
     }
 
+    // TODO：改为枚举
     // X：表示技术类异常
     // Y：业务类异常
     // Z：unknown，不确定的异常，确定后再将其归类到 X 或 Y

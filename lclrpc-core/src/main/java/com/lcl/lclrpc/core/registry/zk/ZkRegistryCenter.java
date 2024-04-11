@@ -1,6 +1,6 @@
 package com.lcl.lclrpc.core.registry.zk;
 
-import com.lcl.lclrpc.core.api.LclRpcException;
+import com.lcl.lclrpc.core.api.RpcException;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.meta.ServiceMeta;
@@ -65,7 +65,7 @@ public class ZkRegistryCenter implements RegistryCenter {
                 client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "instance".getBytes());
             }
         } catch (Exception e) {
-            throw new LclRpcException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -82,7 +82,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info("======>>>>>> unregister from zk: {}", instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception e) {
-            throw new LclRpcException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             nodes.forEach(node -> log.info("Fetch service: {}", node));
             return mapInstance(nodes);
         } catch (Exception e) {
-            throw new LclRpcException(e);
+            throw new RpcException(e);
         }
     }
 
