@@ -40,5 +40,7 @@ public interface UserService {
 
     User ex(boolean flag);
 
+    void setTimeoutPort(String timeoutPort);
+
     User find(int timeout);
 }

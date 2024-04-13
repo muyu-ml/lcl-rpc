@@ -4,6 +4,7 @@ import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.provider.ProviderConfig;
 import com.lcl.lclrpc.core.provider.ProviderInvoker;
+import com.lcl.lclrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -45,6 +47,17 @@ public class LclrpcDemoProviderApplication {
 	@RequestMapping("/")
 	public RpcResponse invoke(@RequestBody RpcRequest request) {
 		return providerInvoker.invoke(request);
+	}
+
+	@Autowired
+	UserService userService;
+	@RequestMapping("/timeoutPort")
+	public RpcResponse timeoutPort(@RequestParam("timeoutPort") String timeoutPort) {
+		RpcResponse response = new RpcResponse();
+		userService.setTimeoutPort(timeoutPort);
+		response.setStatus(true);
+		response.setData("success：" + timeoutPort);
+		return response;
 	}
 
 

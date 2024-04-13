@@ -41,8 +41,6 @@ public class LclrpcDemoConsumerApplication {
 	@LclConsumer
 	private UserService userService;
 
-	@LclConsumer
-	private OrderService orderService;
 
 	/**
 	 * @return {@link ApplicationRunner}

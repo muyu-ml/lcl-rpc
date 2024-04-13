@@ -106,6 +106,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void setTimeoutPort(String timeoutPort) {
+
+    }
+
+    @Override
     public User find(int timeout) {
         return new User(100, "Lcl100");
     }

@@ -24,3 +24,6 @@ Content-Type: application/json
 
 ### 超时
 GET http://localhost:8088/find?timeout=1000
+
+### 超时故障端口
+GET http://localhost:8081/timeoutPort?timeoutPort=8080,8094
