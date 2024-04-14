@@ -2,6 +2,7 @@ package com.lcl.lclrpc.demo.consumer;
 
 import com.lcl.lclrpc.core.annotation.LclConsumer;
 import com.lcl.lclrpc.core.api.Router;
+import com.lcl.lclrpc.core.api.RpcContext;
 import com.lcl.lclrpc.core.cluster.GrayRouter;
 import com.lcl.lclrpc.core.consumer.ConsumerConfig;
 import com.lcl.lclrpc.demo.api.OrderService;
@@ -76,7 +77,7 @@ public class LclrpcDemoConsumerApplication {
 	@Bean
 	public ApplicationRunner consumer_runner() {
 		return x -> {
-//			 testAll();
+			 testAll();
 		};
 	}
 
@@ -169,6 +170,29 @@ public class LclrpcDemoConsumerApplication {
 		} catch (RuntimeException e) {
 			System.out.println(" ===> exception: " + e.getMessage());
 		}
+
+		System.out.println("Case 18. >>===[测试服务端抛出一个超时重试后成功的场景]===");
+		// 超时设置的【漏斗原则】
+		// A 2000 -> B 1500 -> C 1200 -> D 1000
+		long start = System.currentTimeMillis();
+		userService.find(1100);
+		userService.find(1100);
+		System.out.println("userService.find take "
+				+ (System.currentTimeMillis()-start) + " ms");
+
+		System.out.println("Case 19. >>===[测试通过Context跨消费者和提供者进行传参]===");
+		String Key_Version = "rpc.version";
+		String Key_Message = "rpc.message";
+		RpcContext.setContextParameter(Key_Version, "v8");
+		RpcContext.setContextParameter(Key_Message, "this is a v8 message");
+		String version = userService.echoParameter(Key_Version);
+		RpcContext.setContextParameter(Key_Version, "v9");
+		RpcContext.setContextParameter(Key_Message, "this is a v9 message");
+		String message = userService.echoParameter(Key_Message);
+		System.out.println(" ===> echo parameter from c->p->c: " + Key_Version + " -> " + version);
+		System.out.println(" ===> echo parameter from c->p->c: " + Key_Message + " -> " + message);
+		// 放在 Filter 后置处理器中
+//		RpcContext.ContextParameters.get().clear(); // 如果不清空，会导致线程复用时参数混乱
 	}
 }
 

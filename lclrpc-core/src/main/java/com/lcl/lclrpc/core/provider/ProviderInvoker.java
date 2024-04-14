@@ -1,10 +1,12 @@
 package com.lcl.lclrpc.core.provider;
 
+import com.lcl.lclrpc.core.api.RpcContext;
 import com.lcl.lclrpc.core.api.RpcException;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
 import com.lcl.lclrpc.core.util.TypeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -13,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Component
+@Slf4j
 public class ProviderInvoker {
 
     private MultiValueMap<String, ProviderMeta> skeleton;
@@ -26,13 +29,17 @@ public class ProviderInvoker {
      * @return {@link RpcResponse}
      */
     public RpcResponse<Object> invoke(RpcRequest request) {
+        log.debug(" ======>>> Provider.invoke request:{}", request);
+        if(!request.getParams().isEmpty()){
+            request.getParams().forEach(RpcContext :: setContextParameter);
+        }
         RpcResponse<Object> rpcResponse = new RpcResponse();
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta providerMeta = findProviderMeta(providerMetas, request.getMethodSign());
             Method method = providerMeta.getMethod();
             // 类型转换，防止对象被序列化后丢失类型信息
-            Object[] parameters = processParams(request.getParameters(), method.getParameterTypes());
+            Object[] parameters = processParams(request.getArgs(), method.getParameterTypes());
             Object result = method.invoke(providerMeta.getServiceImpl(), parameters);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);

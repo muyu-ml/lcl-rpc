@@ -8,6 +8,7 @@ import com.lcl.lclrpc.core.cluster.GrayRouter;
 import com.lcl.lclrpc.core.cluster.RoundRibonLoadbalancer;
 import com.lcl.lclrpc.core.filter.CacheFilter;
 import com.lcl.lclrpc.core.filter.MockFilter;
+import com.lcl.lclrpc.core.filter.ParameterFilter;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +67,10 @@ public class ConsumerConfig {
 //    public Filter filter2() {
 //        return new MockFilter();
 //    }
+    @Bean
+    public Filter filter(){
+        return new ParameterFilter();
+    }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public RegistryCenter consumer_rc() {

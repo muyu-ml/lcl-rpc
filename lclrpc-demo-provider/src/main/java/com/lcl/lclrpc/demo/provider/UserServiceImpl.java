@@ -1,8 +1,10 @@
 package com.lcl.lclrpc.demo.provider;
 
 import com.lcl.lclrpc.core.annotation.LclProvider;
+import com.lcl.lclrpc.core.api.RpcContext;
 import com.lcl.lclrpc.demo.api.User;
 import com.lcl.lclrpc.demo.api.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,7 @@ import java.util.Map;
  */
 @Component
 @LclProvider
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -123,5 +126,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         return new User(100, "Lcl100--" + port);
+    }
+
+    @Override
+    public String echoParameter(String key) {
+        log.info("===========>>> Rpccontext.ContextParamerters: ");
+        RpcContext.ContextParameters.get().forEach((k, v) -> log.info("{} -> {}", k, v));
+        return RpcContext.getContextParameter(key);
     }
 }

@@ -43,4 +43,6 @@ public interface UserService {
     void setTimeoutPort(String timeoutPort);
 
     User find(int timeout);
+
+    String echoParameter(String key);
 }

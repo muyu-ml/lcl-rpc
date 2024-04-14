@@ -71,7 +71,7 @@ public class LclInvoketionHandler implements InvocationHandler {
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setService(service.getCanonicalName());
         rpcRequest.setMethodSign(MethodUtils.buildMethodSign(method));
-        rpcRequest.setParameters(args);
+        rpcRequest.setArgs(args);
 
         int retries = Integer.parseInt(context.getParameters().getOrDefault("app.retries", "1"));
         while (retries-- > 0) {

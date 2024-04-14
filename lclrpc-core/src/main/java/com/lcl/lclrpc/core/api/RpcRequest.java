@@ -3,6 +3,9 @@ package com.lcl.lclrpc.core.api;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author conglongli
  * @date 2024/03/07
@@ -22,5 +25,10 @@ public class RpcRequest {
     /**
      * 参数
      */
-    private Object[] parameters;
+    private Object[] args;
+
+    /**
+     * 跨调用方要传递的参数
+     */
+    private Map<String, String> params = new HashMap<>();
 }
