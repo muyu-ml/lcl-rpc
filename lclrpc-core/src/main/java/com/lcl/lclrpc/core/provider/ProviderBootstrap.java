@@ -89,13 +89,13 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     private void unregisterService(String service) {
         ServiceMeta serviceMeta = ServiceMeta.builder()
-                .app(app).namespace(namespace).env(env).name(service).version(version).build();
+                .app(app).namespace(namespace).env(env).name(service).build();
         rc.unregister(serviceMeta, instance);
     }
 
     private void registerService(String service) {
         ServiceMeta serviceMeta = ServiceMeta.builder()
-                .app(app).namespace(namespace).env(env).name(service).version(version).build();
+                .app(app).namespace(namespace).env(env).name(service).build();
         // 注册服务
         rc.register(serviceMeta, instance);
     }

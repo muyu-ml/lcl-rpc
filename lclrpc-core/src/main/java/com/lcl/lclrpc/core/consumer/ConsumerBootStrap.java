@@ -88,7 +88,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     private Object createConsumerFromRegistry(Class<?> service, RpcContext context, RegistryCenter rc) {
         String serviceName = service.getCanonicalName();
         ServiceMeta serviceMeta = ServiceMeta.builder()
-                .app(app).namespace(namespace).env(env).name(serviceName).version(version).build();
+                .app(app).namespace(namespace).env(env).name(serviceName).build();
         List<InstanceMeta> providers = rc.fetchAll(serviceMeta);
         providers.forEach(x -> log.info("fetch provider: {}", x));
         rc.subscribe(serviceMeta, event -> {
