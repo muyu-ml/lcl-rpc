@@ -1,11 +1,14 @@
 package com.lcl.lclrpc.demo.consumer;
 
 import com.lcl.lclrpc.core.annotation.LclConsumer;
+import com.lcl.lclrpc.core.api.Router;
+import com.lcl.lclrpc.core.cluster.GrayRouter;
 import com.lcl.lclrpc.core.consumer.ConsumerConfig;
 import com.lcl.lclrpc.demo.api.OrderService;
 import com.lcl.lclrpc.demo.api.User;
 import com.lcl.lclrpc.demo.api.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -58,6 +61,16 @@ public class LclrpcDemoConsumerApplication {
 		User user = userService.find(1000);
 		log.info("userService.find  =======>>>>>  time: " + (System.currentTimeMillis() - start));
 		return user;
+	}
+
+
+	@Autowired
+	Router router;
+
+	@RequestMapping("/gray")
+	public String gray(@RequestParam(name="grayRatio") int grayRatio) {
+		((GrayRouter)router).setGrayRatio(grayRatio);
+		return "ok~ new grayRatio: " + grayRatio;
 	}
 
 	@Bean

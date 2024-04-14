@@ -13,6 +13,7 @@ app:
   version: 1.0.0
   retries: 2
   timeout: 1000
+  grayRatio: 10
 
 logging:
   level:

@@ -4,6 +4,7 @@ import com.lcl.lclrpc.core.api.Filter;
 import com.lcl.lclrpc.core.api.Loadbalancer;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.api.Router;
+import com.lcl.lclrpc.core.cluster.GrayRouter;
 import com.lcl.lclrpc.core.cluster.RoundRibonLoadbalancer;
 import com.lcl.lclrpc.core.filter.CacheFilter;
 import com.lcl.lclrpc.core.filter.MockFilter;
@@ -23,6 +24,13 @@ public class ConsumerConfig {
 
     @Value("${lclrpc.providers}")
     String services;
+
+    public void setGrayRatio(int grayRatio) {
+        this.grayRatio = grayRatio;
+    }
+
+    @Value("${app.grayRatio}")
+    private int grayRatio;
 
     @Bean
     ConsumerBootStrap createConsumerBootStrap() {
@@ -46,7 +54,7 @@ public class ConsumerConfig {
 
     @Bean
     public Router<InstanceMeta> router() {
-        return Router.Default;
+        return new GrayRouter(grayRatio);
     }
 
 //    @Bean
@@ -63,4 +71,6 @@ public class ConsumerConfig {
     public RegistryCenter consumer_rc() {
         return new ZkRegistryCenter();
     }
+
+
 }
