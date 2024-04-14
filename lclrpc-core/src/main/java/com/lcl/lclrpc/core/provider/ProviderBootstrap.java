@@ -53,6 +53,8 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private String env;
     @Value("${app.version}")
     private String version;
+    @Value("#{${app.metas}}") // $：获取字符串 #：使用Spel表达式转Map
+    Map<String, String> meta;
 
 
 
@@ -73,6 +75,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         // 注册服务
         String ip = InetAddress.getLocalHost().getHostAddress();
         this.instance = InstanceMeta.http(ip, port);
+        instance.getParameters().putAll(meta);
         rc.start();
         skeleton.keySet().forEach(this :: registerService);
     }

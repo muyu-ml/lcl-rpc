@@ -15,4 +15,4 @@ app:
 logging:
   level:
     root: info
-    com.lcl.lclrpc: debug
+    com.lcl.lclrpc: info

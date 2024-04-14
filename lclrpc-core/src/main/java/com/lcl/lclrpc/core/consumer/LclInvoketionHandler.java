@@ -75,7 +75,7 @@ public class LclInvoketionHandler implements InvocationHandler {
 
         int retries = Integer.parseInt(context.getParameters().getOrDefault("app.retries", "1"));
         while (retries-- > 0) {
-            log.info("=======>>> retries：{}", retries);
+            log.debug("=======>>> retries：{}", retries);
             try {
                 // 前置过滤器
                 for (Filter filter : context.getFilters()) {

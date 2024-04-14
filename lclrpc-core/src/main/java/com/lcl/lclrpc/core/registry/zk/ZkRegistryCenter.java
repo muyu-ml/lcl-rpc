@@ -1,5 +1,6 @@
 package com.lcl.lclrpc.core.registry.zk;
 
+import com.alibaba.fastjson.JSON;
 import com.lcl.lclrpc.core.api.RpcException;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
@@ -17,6 +18,7 @@ import org.apache.zookeeper.CreateMode;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +64,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             String instancePath = servicePath + "/" + instance.toPath();
             log.info("======>>>>>> Register to zk service: {}, instance: {}", service, instance);
             if(client.checkExists().forPath(instancePath) == null) {
-                client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "instance".getBytes());
+                client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, instance.toMetas().getBytes());
             }
         } catch (Exception e) {
             throw new RpcException(e);
@@ -93,17 +95,29 @@ public class ZkRegistryCenter implements RegistryCenter {
             List<String> nodes = client.getChildren().forPath(servicePath);
             log.info("Fetch all service ......");
             nodes.forEach(node -> log.info("Fetch service: {}", node));
-            return mapInstance(nodes);
+            return mapInstance(nodes, servicePath);
         } catch (Exception e) {
             throw new RpcException(e);
         }
     }
 
     @NotNull
-    private static List<InstanceMeta> mapInstance(List<String> nodes) {
+    private List<InstanceMeta> mapInstance(List<String> nodes, String servicePath) {
         return nodes.stream().map(x -> {
             String[] strs = x.split("_");
-            return InstanceMeta.http(strs[0], Integer.parseInt(strs[1]));
+            InstanceMeta instance = InstanceMeta.http(strs[0], Integer.parseInt(strs[1]));
+            log.info("instance：", instance.toUrl());
+            String nodePath = servicePath + "/" + x;
+            byte[] bytes;
+            try {
+                bytes = client.getData().forPath(nodePath);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            HashMap params = JSON.parseObject(new String(bytes), HashMap.class);
+            params.forEach((k,v) -> log.info("{}  ->  {}", k, v));
+            instance.setParameters(params);
+            return instance;
         }).collect(Collectors.toList());
     }
 

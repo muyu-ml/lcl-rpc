@@ -1,9 +1,11 @@
 package com.lcl.lclrpc.core.meta;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -20,7 +22,7 @@ public class InstanceMeta {
     private String context;
 
     private boolean status;
-    private Map<String, String> parameters;
+    private Map<String, String> parameters = new HashMap<>();
 
     public InstanceMeta(String schema, String host, int port, String context) {
         this.schema = schema;
@@ -39,5 +41,9 @@ public class InstanceMeta {
 
     public String toUrl() {
         return String.format("%s://%s:%d/%s", schema, host, port, context);
+    }
+
+    public String toMetas() {
+        return JSON.toJSONString(this.getParameters());
     }
 }

@@ -17,4 +17,4 @@ app:
 logging:
   level:
     root: error
-    com.lcl.lclrpc: debug
+    com.lcl.lclrpc: info
