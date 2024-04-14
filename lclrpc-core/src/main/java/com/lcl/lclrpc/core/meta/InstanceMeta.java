@@ -36,7 +36,7 @@ public class InstanceMeta {
     }
 
     public static InstanceMeta http(String host, int port) {
-        return new InstanceMeta("http", host, port, "");
+        return new InstanceMeta("http", host, port, "lclrpc");
     }
 
     public String toUrl() {

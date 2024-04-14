@@ -33,32 +33,17 @@ public class LclrpcDemoProviderApplication {
 		SpringApplication.run(LclrpcDemoProviderApplication.class, args);
 	}
 
-	/**
-	 *
-	 */
-	@Autowired
-	private ProviderInvoker providerInvoker;
-
-	/**
-	 * 使用HTTP + JSON 作为序列化和通信协议
-	 * @param request
-	 * @return {@link RpcResponse}
-	 */
-	@RequestMapping("/")
-	public RpcResponse invoke(@RequestBody RpcRequest request) {
-		return providerInvoker.invoke(request);
-	}
-
-	@Autowired
-	UserService userService;
-	@RequestMapping("/timeoutPort")
-	public RpcResponse timeoutPort(@RequestParam("timeoutPort") String timeoutPort) {
-		RpcResponse response = new RpcResponse();
-		userService.setTimeoutPort(timeoutPort);
-		response.setStatus(true);
-		response.setData("success：" + timeoutPort);
-		return response;
-	}
+//
+//	@Autowired
+//	UserService userService;
+//	@RequestMapping("/timeoutPort")
+//	public RpcResponse timeoutPort(@RequestParam("timeoutPort") String timeoutPort) {
+//		RpcResponse response = new RpcResponse();
+//		userService.setTimeoutPort(timeoutPort);
+//		response.setStatus(true);
+//		response.setData("success：" + timeoutPort);
+//		return response;
+//	}
 
 
 	/**
