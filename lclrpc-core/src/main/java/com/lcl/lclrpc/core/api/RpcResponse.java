@@ -26,5 +26,5 @@ public class RpcResponse<T> {
     /**
      * 异常信息
      */
-    Exception ex;
+    RpcException ex;
 }
