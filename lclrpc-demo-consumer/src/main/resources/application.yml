@@ -1,21 +1,21 @@
 server:
   port: 8088
-
-lclrpc:
-  providers: http://localhost:8081/,http://localhost:8082/,http://localhost:8083/
-  zkServers: localhost:2181
-  zkRoot: lclrpc
-
-app:
-  id: app1
-  namespace: public
-  env: dev
-  version: 1.0.0
-  retries: 2
-  timeout: 1000
-  grayRatio: 10
-
-logging:
-  level:
-    root: error
-    com.lcl.lclrpc: info
+#
+#lclrpc:
+#  providers: http://localhost:8081/,http://localhost:8082/,http://localhost:8083/
+#  zkServers: localhost:2181
+#  zkRoot: lclrpc
+#
+#app:
+#  id: app1
+#  namespace: public
+#  env: dev
+#  version: 1.0.0
+#  retries: 2
+#  timeout: 1000
+#  grayRatio: 10
+#
+#logging:
+#  level:
+#    root: error
+#    com.lcl.lclrpc: info

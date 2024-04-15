@@ -1,5 +1,6 @@
 package com.lcl.lclrpc.demo.consumer;
 
+import com.lcl.lclrpc.core.annotation.EnableLclrpc;
 import com.lcl.lclrpc.core.annotation.LclConsumer;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.api.RpcContext;
@@ -30,7 +31,7 @@ import java.util.Map;
  * @doc
  */
 @SpringBootApplication
-@Import({ConsumerConfig.class})
+@EnableLclrpc
 @RestController
 @Slf4j
 public class LclrpcDemoConsumerApplication {

@@ -30,17 +30,17 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     ApplicationContext applicationContext;
     Environment environment;
 
-    @Value("${app.id}")
+    @Value("${app.id:app1}")
     private String app;
-    @Value("${app.namespace}")
+    @Value("${app.namespace:public}")
     private String namespace;
-    @Value("${app.env}")
+    @Value("${app.env:dev}")
     private String env;
-    @Value("${app.version}")
+    @Value("${app.version:1.0.0}")
     private String version;
-    @Value("${app.retries}")
+    @Value("${app.retries:2}")
     private int retries;
-    @Value("${app.timeout}")
+    @Value("${app.timeout:1000}")
     private int timeout;
 
     private Map<String, Object> stub = new HashMap<>();

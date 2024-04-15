@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -23,14 +24,14 @@ import org.springframework.core.annotation.Order;
 @Slf4j
 public class ConsumerConfig {
 
-    @Value("${lclrpc.providers}")
-    String services;
+//    @Value("${lclrpc.providers}")
+//    String services;
 
     public void setGrayRatio(int grayRatio) {
         this.grayRatio = grayRatio;
     }
 
-    @Value("${app.grayRatio}")
+    @Value("${app.grayRatio:10}")
     private int grayRatio;
 
     @Bean
@@ -73,6 +74,7 @@ public class ConsumerConfig {
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
+    @ConditionalOnMissingBean
     public RegistryCenter consumer_rc() {
         return new ZkRegistryCenter();
     }

@@ -1,5 +1,6 @@
 package com.lcl.lclrpc.demo.provider;
 
+import com.lcl.lclrpc.core.annotation.EnableLclrpc;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
 import com.lcl.lclrpc.core.provider.ProviderConfig;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SpringBootApplication
 @RestController
-@Import({ProviderConfig.class})
+@EnableLclrpc
 public class LclrpcDemoProviderApplication {
 
 	/**

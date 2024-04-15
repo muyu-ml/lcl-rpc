@@ -43,17 +43,17 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
     private InstanceMeta instance;
-    @Value("${server.port}")
+    @Value("${server.port:8080}")
     private int port;
-    @Value("${app.id}")
+    @Value("${app.id:app1}")
     private String app;
-    @Value("${app.namespace}")
+    @Value("${app.namespace:public}")
     private String namespace;
-    @Value("${app.env}")
+    @Value("${app.env:dev}")
     private String env;
-    @Value("${app.version}")
+    @Value("${app.version:1.0.0}")
     private String version;
-    @Value("#{${app.metas}}") // $：获取字符串 #：使用Spel表达式转Map
+    @Value("#{${app.metas:{gray: 'false', dc: 'bj', unit: 'B001'}}}") // $：获取字符串 #：使用Spel表达式转Map
     Map<String, String> meta;
 
 
