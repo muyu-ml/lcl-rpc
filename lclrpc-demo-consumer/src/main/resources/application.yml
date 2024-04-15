@@ -15,7 +15,7 @@ server:
 #  timeout: 1000
 #  grayRatio: 10
 #
-#logging:
-#  level:
-#    root: error
-#    com.lcl.lclrpc: info
+logging:
+  level:
+    root: error
+    com.lcl.lclrpc: debug
