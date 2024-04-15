@@ -1,7 +1,7 @@
 package com.lcl.lclrpc.core.annotation;
 
-import com.lcl.lclrpc.core.consumer.ConsumerConfig;
-import com.lcl.lclrpc.core.provider.ProviderConfig;
+import com.lcl.lclrpc.core.config.ConsumerConfig;
+import com.lcl.lclrpc.core.config.ProviderConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

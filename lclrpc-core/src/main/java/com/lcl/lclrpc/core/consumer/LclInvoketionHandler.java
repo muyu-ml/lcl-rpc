@@ -49,7 +49,7 @@ public class LclInvoketionHandler implements InvocationHandler {
         httpInvoker = new OkHttpInvoker(timeout);
         this.executor = Executors.newScheduledThreadPool(1);
         // delay 10 秒启动，每隔 60 秒检查一次
-        this.executor.scheduleWithFixedDelay(this::halfOpen, 10, 60, TimeUnit.SECONDS);
+        this.executor.scheduleWithFixedDelay(this::halfOpen, Integer.parseInt(context.param("consumer.halfOpenInitialDelay")), Integer.parseInt(context.param("consumer.halfOpenDelay")), TimeUnit.MILLISECONDS);
     }
 
     /**

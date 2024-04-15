@@ -2,10 +2,9 @@ package com.lcl.lclrpc.demo.provider;
 
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
-import com.lcl.lclrpc.core.provider.ProviderConfig;
+import com.lcl.lclrpc.core.config.ProviderConfig;
 import com.lcl.lclrpc.core.provider.ProviderInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;

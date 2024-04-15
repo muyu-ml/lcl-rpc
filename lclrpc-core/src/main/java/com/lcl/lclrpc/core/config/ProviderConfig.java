@@ -1,10 +1,13 @@
-package com.lcl.lclrpc.core.provider;
+package com.lcl.lclrpc.core.config;
 
 import com.lcl.lclrpc.core.api.RegistryCenter;
+import com.lcl.lclrpc.core.provider.ProviderBootstrap;
+import com.lcl.lclrpc.core.provider.ProviderInvoker;
 import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import com.lcl.lclrpc.core.transport.SpringBootTransport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -19,15 +22,23 @@ import org.springframework.core.annotation.Order;
  */
 @Slf4j
 @Configuration
-@Import({SpringBootTransport.class})
+@Import({SpringBootTransport.class, AppConfigProperties.class, ProviderConfigProperties.class})
 public class ProviderConfig {
+
+    @Value("${server.port:8080}")
+    private int port;
+    @Autowired
+    private AppConfigProperties appConfigProperties;
+    @Autowired
+    private ProviderConfigProperties providerConfigProperties;
+
 
     /**
      * @return {@link ProviderBootstrap}
      */
     @Bean
     ProviderBootstrap providerBootstrap() {
-        return new ProviderBootstrap();
+        return new ProviderBootstrap(port, appConfigProperties, providerConfigProperties);
     }
 
     @Bean

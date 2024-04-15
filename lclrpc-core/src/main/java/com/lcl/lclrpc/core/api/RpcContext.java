@@ -21,6 +21,10 @@ public class RpcContext {
         }
     };
 
+    public String param(String key) {
+        return parameters.get(key);
+    }
+
     public static void setContextParameter(Map<String, String> params) {
         ContextParameters.set(params);
     }

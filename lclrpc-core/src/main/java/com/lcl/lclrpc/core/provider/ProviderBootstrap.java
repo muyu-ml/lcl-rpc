@@ -2,6 +2,8 @@ package com.lcl.lclrpc.core.provider;
 
 import com.lcl.lclrpc.core.annotation.LclProvider;
 import com.lcl.lclrpc.core.api.RegistryCenter;
+import com.lcl.lclrpc.core.config.AppConfigProperties;
+import com.lcl.lclrpc.core.config.ProviderConfigProperties;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
 import com.lcl.lclrpc.core.meta.ServiceMeta;
@@ -11,7 +13,6 @@ import jakarta.annotation.PreDestroy;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.LinkedMultiValueMap;
@@ -43,20 +44,16 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
     private InstanceMeta instance;
-    @Value("${server.port:8080}")
+
     private int port;
-    @Value("${app.id:app1}")
-    private String app;
-    @Value("${app.namespace:public}")
-    private String namespace;
-    @Value("${app.env:dev}")
-    private String env;
-    @Value("${app.version:1.0.0}")
-    private String version;
-    @Value("#{${app.metas:{gray: 'false', dc: 'bj', unit: 'B001'}}}") // $：获取字符串 #：使用Spel表达式转Map
-    Map<String, String> meta;
+    private AppConfigProperties appConfigProperties;
+    private ProviderConfigProperties providerConfigProperties;
 
-
+    public ProviderBootstrap(int port, AppConfigProperties appConfigProperties, ProviderConfigProperties providerConfigProperties) {
+        this.port = port;
+        this.appConfigProperties = appConfigProperties;
+        this.providerConfigProperties = providerConfigProperties;
+    }
 
     /**
      *
@@ -75,7 +72,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         // 注册服务
         String ip = InetAddress.getLocalHost().getHostAddress();
         this.instance = InstanceMeta.http(ip, port);
-        instance.getParameters().putAll(meta);
+        instance.getParameters().putAll(providerConfigProperties.getMetas());
         rc.start();
         skeleton.keySet().forEach(this :: registerService);
     }
@@ -88,14 +85,22 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void unregisterService(String service) {
-        ServiceMeta serviceMeta = ServiceMeta.builder()
-                .app(app).namespace(namespace).env(env).name(service).build();
+        ServiceMeta serviceMeta = getServiceMeta(service);
         rc.unregister(serviceMeta, instance);
     }
 
-    private void registerService(String service) {
+    private ServiceMeta getServiceMeta(String service) {
         ServiceMeta serviceMeta = ServiceMeta.builder()
-                .app(app).namespace(namespace).env(env).name(service).build();
+                .app(appConfigProperties.getId())
+                .namespace(appConfigProperties.getNamespace())
+                .env(appConfigProperties.getEnv())
+                .name(service)
+                .build();
+        return serviceMeta;
+    }
+
+    private void registerService(String service) {
+        ServiceMeta serviceMeta = getServiceMeta(service);
         // 注册服务
         rc.register(serviceMeta, instance);
     }

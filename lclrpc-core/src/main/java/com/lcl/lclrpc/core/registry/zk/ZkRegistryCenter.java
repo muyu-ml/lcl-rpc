@@ -27,9 +27,9 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     private CuratorFramework client = null;
 
-    @Value("${lclrpc.zkServers:localhost:2181}")
+    @Value("${lclrpc.zk.servers:localhost:2181}")
     private String services;
-    @Value("${lclrpc.zkRoot:lclrpc}")
+    @Value("${lclrpc.zk.root:lclrpc}")
     private String zkRoot;
 
 
