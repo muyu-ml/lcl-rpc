@@ -10,21 +10,52 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootTest
+@SpringBootTest(classes = {LclrpcDemoConsumerApplication.class})
 @Slf4j
 class LclrpcDemoConsumerApplicationTests {
 
 
-	static ApplicationContext context;
+	static ApplicationContext context1;
+	static ApplicationContext context2;
 
 	static TestZKServer zkServer = new TestZKServer();
 
 	@BeforeAll
 	static void init() {
-		log.info(" ====================================== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" =============     ZK2182    ========== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" ====================================== ");
 		zkServer.start();
-		context = SpringApplication.run(LclrpcDemoProviderApplication.class,
-				"--server.port=8084", "--lclrpc.zkServer=localhost:2182", "--logging.level.com.lcl.lclrpc=debug");
+		System.out.println(" ====================================== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" =============      P8094    ========== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" ====================================== ");
+		context1 = SpringApplication.run(LclrpcDemoProviderApplication.class,
+				"--server.port=8094",
+				"--lclrpc.zk.servers=localhost:2182",
+				"--lclrpc.app.env=test",
+				"--logging.level.com.lcl.lclrpc=info",
+				"--lclrpc.provider.metas.dc=bj",
+				"--lclrpc.provider.metas.gray=false",
+				"--lclrpc.provider.metas.unit=B001"
+		);
+		System.out.println(" ====================================== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" =============      P8095    ========== ");
+		System.out.println(" ====================================== ");
+		System.out.println(" ====================================== ");
+		context2 = SpringApplication.run(LclrpcDemoProviderApplication.class,
+				"--server.port=8095",
+				"--lclrpc.zk.servers=localhost:2182",
+				"--lclrpc.app.env=test",
+				"--logging.level.com.lcl.lclrpc=info",
+				"--lclrpc.provider.metas.dc=bj",
+				"--lclrpc.provider.metas.gray=false",
+				"--lclrpc.provider.metas.unit=B002"
+		);
 	}
 
 	@Test
@@ -34,7 +65,8 @@ class LclrpcDemoConsumerApplicationTests {
 
 	@AfterAll
 	static void destory() {
-		SpringApplication.exit(context, () -> 1);
+		SpringApplication.exit(context1, () -> 1);
+		SpringApplication.exit(context2, () -> 1);
 		zkServer.stop();
 	}
 

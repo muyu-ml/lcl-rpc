@@ -75,7 +75,7 @@ public class LclrpcDemoConsumerApplication {
 	@Bean
 	public ApplicationRunner consumer_runner() {
 		return x -> {
-			 testAll();
+//			 testAll();
 		};
 	}
 
