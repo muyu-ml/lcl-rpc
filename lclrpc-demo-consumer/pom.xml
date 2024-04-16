@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>com.lcl</groupId>
 		<artifactId>lclrpc</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${lclrpc.version}</version>
 	</parent>
 	<artifactId>lclrpc-demo-consumer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${lclrpc.version}</version>
 	<name>lclrpc-demo-consumer</name>
 	<description>lclrpc-demo-consumer</description>
 
@@ -29,12 +29,12 @@
 		<dependency>
 			<groupId>com.lcl</groupId>
 			<artifactId>lclrpc-demo-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${lclrpc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lcl</groupId>
 			<artifactId>lclrpc-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${lclrpc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.lcl</groupId>
 			<artifactId>lclrpc-demo-provider</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${lclrpc.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

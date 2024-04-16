@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.lcl</groupId>
         <artifactId>lclrpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${lclrpc.version}</version>
     </parent>
     <artifactId>lclrpc-demo-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${lclrpc.version}</version>
     <name>lclrpc-demo-api</name>
     <description>lclrpc-demo-api</description>
 
