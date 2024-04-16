@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.lcl</groupId>
+		<groupId>io.github.muyu-ml</groupId>
 		<artifactId>lclrpc</artifactId>
 		<version>${lclrpc.version}</version>
 	</parent>
@@ -27,12 +27,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.lcl</groupId>
+			<groupId>io.github.muyu-ml</groupId>
 			<artifactId>lclrpc-demo-api</artifactId>
 			<version>${lclrpc.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.lcl</groupId>
+			<groupId>io.github.muyu-ml</groupId>
 			<artifactId>lclrpc-core</artifactId>
 			<version>${lclrpc.version}</version>
 		</dependency>
@@ -53,7 +53,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.lcl</groupId>
+			<groupId>io.github.muyu-ml</groupId>
 			<artifactId>lclrpc-demo-provider</artifactId>
 			<version>${lclrpc.version}</version>
 			<scope>test</scope>
