@@ -4,20 +4,44 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.muyu-ml</groupId>
   <artifactId>lclrpc-demo-consumer</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>lclrpc-demo-consumer</name>
   <description>lclrpc-demo-consumer</description>
+  <url>https://github.com/muyu-ml/lcl-rpc/lclrpc-demo-consumer</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>lcl</name>
+      <email>liconglong@163.com</email>
+      <url>https://www.cnblogs.com/liconglong</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/muyu-ml/lcl-rpc.git/lclrpc-demo-consumer</connection>
+    <developerConnection>scm:git:https://github.com/muyu-ml/lcl-rpc.git/lclrpc-demo-consumer</developerConnection>
+    <url>https://github.com/muyu-ml/lcl-rpc/lclrpc-demo-consumer</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/muyu-ml/lcl-rpc/issues</url>
+  </issueManagement>
   <dependencies>
     <dependency>
       <groupId>io.github.muyu-ml</groupId>
       <artifactId>lclrpc-demo-api</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>io.github.muyu-ml</groupId>
       <artifactId>lclrpc-core</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
