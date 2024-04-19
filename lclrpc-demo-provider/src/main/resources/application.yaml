@@ -15,6 +15,7 @@ lclrpc:
         gray: false
         dc: bj
         unit: B001
+        tc: 25
 
 logging:
   level:

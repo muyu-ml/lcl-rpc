@@ -37,6 +37,11 @@ public class RpcException extends RuntimeException{
     // Z：unknown，不确定的异常，确定后再将其归类到 X 或 Y
     public static final String SocketTimeoutEx = "X001" + "-" + "http_invoke_timeout";
     public static final String NoSuchMethodEx = "X002" + "-" + "method_not_exists";
+    public static final String ExceedLimitEx  = "X003" + "-" + "tps_exceed_limit";
     public static final String UnKnownEx = "Z001" + "-" + "unknown";
 
+    public RpcException(String message, String reason) {
+        super(message);
+        this.errorCode = reason;
+    }
 }

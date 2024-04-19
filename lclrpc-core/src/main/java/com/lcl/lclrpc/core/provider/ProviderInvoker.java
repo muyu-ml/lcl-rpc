@@ -4,6 +4,7 @@ import com.lcl.lclrpc.core.api.RpcContext;
 import com.lcl.lclrpc.core.api.RpcException;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
+import com.lcl.lclrpc.core.governance.SlidingTimeWindow;
 import com.lcl.lclrpc.core.meta.ProviderMeta;
 import com.lcl.lclrpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,9 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -20,8 +23,17 @@ public class ProviderInvoker {
 
     private MultiValueMap<String, ProviderMeta> skeleton;
 
+    final Map<String, SlidingTimeWindow> windows = new HashMap<>();
+
+    // todo 改成map，针对不同的服务用不同的流控
+    // todo 改为全局流控（对多个节点共享数值），例如将流控值放到redis中
+    private final int trafficControl;// = 20;
+    final Map<String, String> metas;
+
     public ProviderInvoker(ProviderBootstrap providerBootstrap){
         this.skeleton = providerBootstrap.getSkeleton();
+        this.metas = providerBootstrap.getProviderConfigProperties().getMetas();
+        this.trafficControl = Integer.parseInt(this.metas.getOrDefault("tc", "20"));
     }
 
     /**
@@ -34,6 +46,22 @@ public class ProviderInvoker {
             request.getParams().forEach(RpcContext :: setContextParameter);
         }
         RpcResponse<Object> rpcResponse = new RpcResponse();
+
+        String service = request.getService();
+        // 服务端限流，主流做法是使用令牌桶、漏桶算法
+        synchronized (windows){
+            SlidingTimeWindow window = windows.computeIfAbsent(service, k -> new SlidingTimeWindow());
+            int trafficControl = Integer.parseInt(metas.getOrDefault("tc", "20"));
+            if(window.calcSum() >= trafficControl){
+                System.out.println(window);
+                throw new RpcException("service " + service + " invoked in 30s/[" +
+                        window.getSum() + "] larger than tpsLimit = " + trafficControl, RpcException.ExceedLimitEx);
+            }
+            window.record(System.currentTimeMillis());
+            log.debug("service {} in window with {}", service, window.getSum());
+        }
+
+
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta providerMeta = findProviderMeta(providerMetas, request.getMethodSign());
