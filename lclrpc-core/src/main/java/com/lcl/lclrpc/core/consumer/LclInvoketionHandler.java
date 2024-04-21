@@ -45,11 +45,11 @@ public class LclInvoketionHandler implements InvocationHandler {
         this.service = service;
         this.context = context;
         this.providers = providers;
-        int timeout = Integer.parseInt(context.getParameters().getOrDefault("app.timeout", "1000"));
+        int timeout = context.getConsumerConfigProperties().getTimeout();
         httpInvoker = new OkHttpInvoker(timeout);
         this.executor = Executors.newScheduledThreadPool(1);
         // delay 10 秒启动，每隔 60 秒检查一次
-        this.executor.scheduleWithFixedDelay(this::halfOpen, Integer.parseInt(context.param("consumer.halfOpenInitialDelay")), Integer.parseInt(context.param("consumer.halfOpenDelay")), TimeUnit.MILLISECONDS);
+        this.executor.scheduleWithFixedDelay(this::halfOpen, context.getConsumerConfigProperties().getHalfOpenInitialDelay(), context.getConsumerConfigProperties().getHalfOpenDelay(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -73,7 +73,8 @@ public class LclInvoketionHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.buildMethodSign(method));
         rpcRequest.setArgs(args);
 
-        int retries = Integer.parseInt(context.getParameters().getOrDefault("app.retries", "1"));
+        int retries = context.getConsumerConfigProperties().getRetries();
+        int faultLimit = context.getConsumerConfigProperties().getFaultLimit();
         while (retries-- > 0) {
             log.debug("=======>>> retries：{}", retries);
             try {
@@ -118,7 +119,7 @@ public class LclInvoketionHandler implements InvocationHandler {
                     window.record(System.currentTimeMillis());
                     log.debug("instance {} in windows 30s exception times: {}", url, window.getSum());
                     // 如果30s内异常次数超过10次，就做故障隔离
-                    if(window.getSum() >= 10) {
+                    if(window.getSum() >= faultLimit) {
                         log.error("instance {} is breaked", url);
                         isolate(instance);
                     }

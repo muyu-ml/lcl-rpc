@@ -30,3 +30,11 @@ GET http://localhost:8081/timeoutPort?timeoutPort=8080,8094
 
 ### 修改灰度比例
 GET http://localhost:8088/gray?grayRatio=100
+
+### 获取provider配置
+GET http://localhost:8081/metas
+
+### 获取consumer配置
+GET http://localhost:8088/consumerConfigProperties
+
+

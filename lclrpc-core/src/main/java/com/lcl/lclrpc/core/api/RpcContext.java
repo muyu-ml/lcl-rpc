@@ -1,6 +1,7 @@
 package com.lcl.lclrpc.core.api;
 
 import com.alibaba.fastjson.JSONArray;
+import com.lcl.lclrpc.core.config.ConsumerConfigProperties;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
 import lombok.Data;
 
@@ -14,6 +15,9 @@ public class RpcContext {
     Loadbalancer<InstanceMeta> loadbalancer;
     List<Filter> filters;
     private Map<String, String> parameters = new HashMap<>();
+
+    private ConsumerConfigProperties consumerConfigProperties;
+
     public static ThreadLocal<Map<String, String>> ContextParameters = new ThreadLocal<>() {
         @Override
         protected Map<String, String> initialValue() {

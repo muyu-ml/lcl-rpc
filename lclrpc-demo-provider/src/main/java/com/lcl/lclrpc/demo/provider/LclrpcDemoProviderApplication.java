@@ -1,9 +1,12 @@
 package com.lcl.lclrpc.demo.provider;
 
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.lcl.lclrpc.core.annotation.EnableLclrpc;
 import com.lcl.lclrpc.core.api.RpcException;
 import com.lcl.lclrpc.core.api.RpcRequest;
 import com.lcl.lclrpc.core.api.RpcResponse;
+import com.lcl.lclrpc.core.config.ApolloChangeListener;
+import com.lcl.lclrpc.core.config.ProviderConfigProperties;
 import com.lcl.lclrpc.core.transport.SpringBootTransport;
 import com.lcl.lclrpc.demo.api.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -26,7 +30,13 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 @EnableLclrpc
+@EnableApolloConfig
 public class LclrpcDemoProviderApplication {
+
+//	@Bean
+//	ApolloChangeListener apolloChangeListener() {
+//		return new ApolloChangeListener();
+//	}
 
 	/**
 	 * @param args
@@ -46,6 +56,13 @@ public class LclrpcDemoProviderApplication {
 //		response.setData("success：" + timeoutPort);
 //		return response;
 //	}
+
+	@Autowired
+	ProviderConfigProperties providerConfigProperties;
+	@RequestMapping("/metas")
+	public String metas() {
+		return providerConfigProperties.getMetas().toString();
+	}
 
 
 	/**

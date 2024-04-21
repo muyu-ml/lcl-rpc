@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,6 +31,13 @@ public class ConsumerConfig {
     private AppConfigProperties appConfigProperties;
     @Autowired
     private ConsumerConfigProperties ConsumerConfigProperties;
+
+    @Bean
+    @ConditionalOnProperty(prefix = "apollo.bootstrap", name = "enabled")
+    @ConditionalOnMissingBean
+    ApolloChangeListener consumer_apolloChangeListener() {
+        return new ApolloChangeListener();
+    }
 
     @Bean
     ConsumerBootStrap createConsumerBootStrap() {
@@ -78,11 +86,7 @@ public class ConsumerConfig {
         context.getParameters().put("app.id" , appConfigProperties.getId());
         context.getParameters().put("app.namespace", appConfigProperties.getNamespace());
         context.getParameters().put("app.env", appConfigProperties.getEnv());
-        context.getParameters().put("consumer.retries", String.valueOf(ConsumerConfigProperties.getRetries()));
-        context.getParameters().put("consumer.timeout", String.valueOf(ConsumerConfigProperties.getTimeout()));
-        context.getParameters().put("consumer.faultLimit", String.valueOf(ConsumerConfigProperties.getFaultLimit()));
-        context.getParameters().put("consumer.halfOpenInitialDelay", String.valueOf(ConsumerConfigProperties.getHalfOpenInitialDelay()));
-        context.getParameters().put("consumer.halfOpenDelay", String.valueOf(ConsumerConfigProperties.getHalfOpenDelay()));
+        context.setConsumerConfigProperties(ConsumerConfigProperties);
         return context;
 
     }

@@ -1,10 +1,12 @@
 package com.lcl.lclrpc.demo.consumer;
 
+import com.alibaba.fastjson.JSON;
 import com.lcl.lclrpc.core.annotation.EnableLclrpc;
 import com.lcl.lclrpc.core.annotation.LclConsumer;
 import com.lcl.lclrpc.core.api.Router;
 import com.lcl.lclrpc.core.api.RpcContext;
 import com.lcl.lclrpc.core.cluster.GrayRouter;
+import com.lcl.lclrpc.core.config.ConsumerConfigProperties;
 import com.lcl.lclrpc.demo.api.User;
 import com.lcl.lclrpc.demo.api.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,9 @@ public class LclrpcDemoConsumerApplication {
 	@LclConsumer
 	private UserService userService;
 
+	@Autowired
+	ConsumerConfigProperties consumerConfigProperties;
+
 
 	/**
 	 * @return {@link ApplicationRunner}
@@ -70,6 +75,11 @@ public class LclrpcDemoConsumerApplication {
 	public String gray(@RequestParam(name="grayRatio") int grayRatio) {
 		((GrayRouter)router).setGrayRatio(grayRatio);
 		return "ok~ new grayRatio: " + grayRatio;
+	}
+
+	@RequestMapping("/consumerConfigProperties")
+	public String getConsumerConfigProperties() {
+		return JSON.toJSONString(consumerConfigProperties);
 	}
 
 	@Bean

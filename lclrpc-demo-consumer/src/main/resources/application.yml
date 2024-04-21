@@ -21,4 +21,17 @@ lclrpc:
 logging:
   level:
     root: error
-    com.lcl.lclrpc: info
+    com.lcl.lclrpc: debug
+
+app:
+  id: lclrpc-customer
+apollo:
+  cache-dir: /opt/data/apollo-cache
+  cluster: default
+  meta: http://localhost:8080
+  autoUpdateInjectedSpringProperties: true
+  bootstrap:
+    enabled: true
+    namespaces: application,shuzhi.customer123
+    eagerLoad:
+      enabled: false
