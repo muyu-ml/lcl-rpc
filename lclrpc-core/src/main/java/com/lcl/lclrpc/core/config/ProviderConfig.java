@@ -3,6 +3,7 @@ package com.lcl.lclrpc.core.config;
 import com.lcl.lclrpc.core.api.RegistryCenter;
 import com.lcl.lclrpc.core.provider.ProviderBootstrap;
 import com.lcl.lclrpc.core.provider.ProviderInvoker;
+import com.lcl.lclrpc.core.registry.lcl.LclReigstryCenter;
 import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import com.lcl.lclrpc.core.transport.SpringBootTransport;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +68,8 @@ public class ProviderConfig {
     @Bean //(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
     public RegistryCenter provider_rc() {
-        return new ZkRegistryCenter();
+//        return new ZkRegistryCenter();
+        return new LclReigstryCenter();
     }
 
 

@@ -17,6 +17,8 @@ lclrpc:
     faultLimit: 10 # 30秒内10次错误做隔离
     halfOpenInitialDelay: 10000
     halfOpenDelay: 60000
+  lclregistry:
+    servers: http://localhost:8484
 
 logging:
   level:

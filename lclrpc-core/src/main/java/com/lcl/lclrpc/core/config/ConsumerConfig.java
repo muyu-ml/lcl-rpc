@@ -8,6 +8,7 @@ import com.lcl.lclrpc.core.filter.CacheFilter;
 import com.lcl.lclrpc.core.filter.MockFilter;
 import com.lcl.lclrpc.core.filter.ParameterFilter;
 import com.lcl.lclrpc.core.meta.InstanceMeta;
+import com.lcl.lclrpc.core.registry.lcl.LclReigstryCenter;
 import com.lcl.lclrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,8 @@ public class ConsumerConfig {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
     public RegistryCenter consumer_rc() {
-        return new ZkRegistryCenter();
+//        return new ZkRegistryCenter();
+        return new LclReigstryCenter();
     }
 
     @Bean

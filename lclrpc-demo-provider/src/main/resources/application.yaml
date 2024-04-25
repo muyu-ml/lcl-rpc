@@ -16,11 +16,13 @@ lclrpc:
         dc: bj
         unit: B001
         tc: 25
+  lclregistry:
+    servers: http://localhost:8484
 
 logging:
   level:
     root: error
-    com.lcl.lclrpc: info
+    com.lcl.lclrpc: debug
 
 app:
   id: lclrpc-provider
