@@ -29,59 +29,48 @@ import java.util.stream.Collectors;
 @Slf4j
 public class LclReigstryCenter implements RegistryCenter {
 
+    private static final String REG_PATH = "/reg";
+    private static final String UN_REG_PATH = "unreg";
+    private static final String VERSION_PATH = "/version";
+    private static final String FIND_ALL_PATH = "/findAll";
+    private static final String RENEWS_PATH  = "/renews";
+
     @Value("${lclrpc.lclregistry.servers}")
     private String servers;
 
-    private ScheduledExecutorService consumerExecutor;
+
     Map<String, Long> VERSIONS = new HashMap<>();
-    private ScheduledExecutorService providerExecutor;
+
     MultiValueMap<InstanceMeta, ServiceMeta> RENEWS = new LinkedMultiValueMap<>();
+    LclHealthChecker healthChecker = new LclHealthChecker();
 
     @Override
     public void start() {
-        log.info(" ==========>>>> LclRegistryCenter starting... to servers: {}", servers);
-        consumerExecutor = Executors.newScheduledThreadPool(1);
-        providerExecutor = Executors.newScheduledThreadPool(1);
-        providerExecutor.scheduleWithFixedDelay(() -> {
-            try{
-                log.debug(" ==========>>>> LclRegistryCenter ping...");
-                RENEWS.keySet().stream().forEach(
-                        instance -> {
-                            String services = String.join(",", RENEWS.get(instance).stream().map(ServiceMeta::toPath).collect(Collectors.toList()));
-                            RENEWS.get(instance).stream().map(x -> x.toPath()).collect(Collectors.toList());
-                            log.debug(" ==========>>>> LclRegistryCenter renew instance {} @ {}", instance, services);
-                            HttpInvoker.httpPost(JSON.toJSONString(instance), servers + "/renews?services=" + services, Long.class);
-                        }
-                );
-            } catch (Exception e) {
-                log.error(" ==========>>>> LclRegistryCenter ping failed, {}", e.getMessage());
-            }
-        }, 5000, 5000, TimeUnit.MILLISECONDS);
+        healthChecker.start();
+        providerCheck();
     }
 
     @Override
     public void stop() {
-        log.info(" ==========>>>> LclRegistryCenter stopping...");
-        gracefulShutdown(consumerExecutor);
-        gracefulShutdown(providerExecutor);
+        healthChecker.stop();
     }
 
-    private void gracefulShutdown(ScheduledExecutorService executorService) {
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
-            if(!executorService.isTerminated()) {
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-
-        }
+    public void providerCheck(){
+        healthChecker.providerCheck(() ->{
+            log.debug(" ==========>>>> LclRegistryCenter ping...");
+            RENEWS.keySet().stream().forEach(
+                    instance -> {
+                        log.debug(" ==========>>>> LclRegistryCenter renew instance {} ", instance);
+                        HttpInvoker.httpPost(JSON.toJSONString(instance), renewPath(RENEWS.get(instance)), Long.class);
+                    }
+            );
+        });
     }
 
     @Override
     public void register(ServiceMeta service, InstanceMeta instance) {
         log.info(" ==========>>>> LclRegistryCenter registered service {} @ {}", service, instance);
-        HttpInvoker.httpPost(JSON.toJSONString(instance), servers + "/reg?service=" + service.toPath(), void.class);
+        HttpInvoker.httpPost(JSON.toJSONString(instance), regPath(service), void.class);
         log.info(" ==========>>>> LclRegistryCenter registered service {} @ {} success", service, instance);
         RENEWS.add(instance, service);
     }
@@ -89,7 +78,7 @@ public class LclReigstryCenter implements RegistryCenter {
     @Override
     public void unregister(ServiceMeta service, InstanceMeta instance) {
         log.info(" ==========>>>> LclRegistryCenter unRegistered service {} @ {}", service, instance);
-        HttpInvoker.httpPost(JSON.toJSONString(instance), servers + "/unreg?service=" + service.toPath(), void.class);
+        HttpInvoker.httpPost(JSON.toJSONString(instance), unRegPath(service), void.class);
         log.info(" ==========>>>> LclRegistryCenter unRegistered service {} @ {} success", service, instance);
         RENEWS.remove(instance, service);
     }
@@ -97,22 +86,54 @@ public class LclReigstryCenter implements RegistryCenter {
     @Override
     public List<InstanceMeta> fetchAll(ServiceMeta service) {
         log.info(" ==========>>>> LclRegistryCenter fetchAll instances service {}", service);
-        List<InstanceMeta> instanceMetas = HttpInvoker.httpGet(servers + "/findAll?service=" + service.toPath(), new TypeReference<List<InstanceMeta>>(){});
+        List<InstanceMeta> instanceMetas = HttpInvoker.httpGet(findAllPath(service), new TypeReference<List<InstanceMeta>>(){});
         log.info(" ==========>>>> LclRegistryCenter fetchAll instances service {} success", service);
         return instanceMetas;
     }
 
+
     @Override
     public void subscribe(ServiceMeta service, ChangeListener listener) {
-        consumerExecutor.scheduleWithFixedDelay(() -> {
+        healthChecker.consumerCheck(() -> {
             Long version = VERSIONS.getOrDefault(service.toPath(), -1L);
-            Long newVersion = HttpInvoker.httpGet(servers + "/version?service=" + service.toPath(), Long.class);
+            Long newVersion = HttpInvoker.httpGet(versionPath(service), Long.class);
             log.info(" ==========>>>> LclRegistryCenter subscribe service = {} , newVersion: {} -> {}", service, version, newVersion);
             if(newVersion > version) {
                 List<InstanceMeta> instances = fetchAll(service);
                 listener.fire(new Event(instances));
                 VERSIONS.put(service.toPath(), newVersion);
             }
-        }, 1000, 5000, TimeUnit.MILLISECONDS);
+        });
+    }
+
+    private String regPath(ServiceMeta service) {
+        return path(REG_PATH, service);
+    }
+
+    private String unRegPath(ServiceMeta service) {
+        return path(UN_REG_PATH, service);
+    }
+
+
+    private String versionPath(ServiceMeta service) {
+        return path(VERSION_PATH, service);
+    }
+
+    private String findAllPath(ServiceMeta service) {
+        return path(FIND_ALL_PATH, service);
+    }
+
+    private String renewPath(List<ServiceMeta> serviceMetaList) {
+        return path(RENEWS_PATH, serviceMetaList);
+    }
+
+    private String path(String context, ServiceMeta service) {
+        return servers + context + "?service=" + service.toPath();
+    }
+
+    private String path(String context, List<ServiceMeta> serviceMetaList) {
+        String services = String.join(",", serviceMetaList.stream().map(ServiceMeta :: toPath).collect(Collectors.toList()));
+        log.debug(" ==========>>>> LclRegistryCenter renew instance  for {} ", services);
+        return servers + context + "?services=" + services;
     }
 }
