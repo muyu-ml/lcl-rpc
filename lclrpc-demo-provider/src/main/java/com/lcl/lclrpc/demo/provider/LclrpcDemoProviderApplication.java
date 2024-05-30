@@ -1,6 +1,7 @@
 package com.lcl.lclrpc.demo.provider;
 
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
+import com.lcl.config.client.annotation.EnableLclConfig;
 import com.lcl.lclrpc.core.annotation.EnableLclrpc;
 import com.lcl.lclrpc.core.api.RpcException;
 import com.lcl.lclrpc.core.api.RpcRequest;
@@ -30,7 +31,8 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 @EnableLclrpc
-@EnableApolloConfig
+//@EnableApolloConfig
+@EnableLclConfig
 public class LclrpcDemoProviderApplication {
 
 //	@Bean

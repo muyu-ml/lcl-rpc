@@ -28,7 +28,7 @@ import org.springframework.core.annotation.Order;
 @Import({SpringBootTransport.class, AppConfigProperties.class, ProviderConfigProperties.class})
 public class ProviderConfig {
 
-    @Value("${server.port:8080}")
+    @Value("${server.port}")
     private int port;
     @Autowired
     private AppConfigProperties appConfigProperties;
