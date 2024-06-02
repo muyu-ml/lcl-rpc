@@ -14,7 +14,7 @@ public interface HttpInvoker {
 
     Logger log = LoggerFactory.getLogger(HttpInvoker.class);
 
-    HttpInvoker Default = new OkHttpInvoker(500);
+    HttpInvoker Default = new OkHttpInvoker(5000);
 
     String post(String requestString, String url);
 
