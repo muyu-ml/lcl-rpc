@@ -38,6 +38,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     public void start() {
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         RpcContext context = applicationContext.getBean(RpcContext.class);
+        rc.start();
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {
